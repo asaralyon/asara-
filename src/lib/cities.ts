@@ -1,0 +1,143 @@
+export const cities = [
+  // Rhône (69)
+  'Lyon',
+  'Villeurbanne',
+  'Venissieux',
+  'Saint-Priest',
+  'Caluire-et-Cuire',
+  'Bron',
+  'Vaulx-en-Velin',
+  'Decines-Charpieu',
+  'Meyzieu',
+  'Rillieux-la-Pape',
+  'Oullins',
+  'Saint-Fons',
+  'Tassin-la-Demi-Lune',
+  'Sainte-Foy-les-Lyon',
+  'Givors',
+  'Ecully',
+  'Francheville',
+  'Saint-Genis-Laval',
+  'Mions',
+  'Corbas',
+  
+  // Isère (38)
+  'Grenoble',
+  'Saint-Martin-d\'Heres',
+  'Echirolles',
+  'Vienne',
+  'Bourgoin-Jallieu',
+  'Fontaine',
+  'Voiron',
+  'Villefontaine',
+  'L\'Isle-d\'Abeau',
+  'Meylan',
+  'Saint-Egreve',
+  'Seyssinet-Pariset',
+  'Le Pont-de-Claix',
+  'Eybens',
+  'Sassenage',
+  
+  // Loire (42)
+  'Saint-Etienne',
+  'Roanne',
+  'Saint-Chamond',
+  'Firminy',
+  'Montbrison',
+  'Rive-de-Gier',
+  'Le Chambon-Feugerolles',
+  'Andrezieux-Boutheon',
+  'Riorges',
+  'La Ricamarie',
+  
+  // Ain (01)
+  'Bourg-en-Bresse',
+  'Oyonnax',
+  'Amberieu-en-Bugey',
+  'Bellegarde-sur-Valserine',
+  'Miribel',
+  'Meximieux',
+  'Trevoux',
+  'Divonne-les-Bains',
+  'Ferney-Voltaire',
+  'Gex',
+  
+  // Haute-Savoie (74)
+  'Annecy',
+  'Thonon-les-Bains',
+  'Annemasse',
+  'Cluses',
+  'Bonneville',
+  'Sallanches',
+  'Cran-Gevrier',
+  'Seynod',
+  'Rumilly',
+  'Chamonix-Mont-Blanc',
+  'Evian-les-Bains',
+  
+  // Savoie (73)
+  'Chambery',
+  'Aix-les-Bains',
+  'Albertville',
+  'La Motte-Servolex',
+  'Saint-Jean-de-Maurienne',
+  'Bourg-Saint-Maurice',
+  'Moutiers',
+  
+  // Drôme (26)
+  'Valence',
+  'Montelimar',
+  'Romans-sur-Isere',
+  'Bourg-les-Valence',
+  'Pierrelatte',
+  'Portes-les-Valence',
+  'Livron-sur-Drome',
+  'Crest',
+  'Die',
+  'Nyons',
+  
+  // Ardèche (07)
+  'Annonay',
+  'Aubenas',
+  'Guilherand-Granges',
+  'Privas',
+  'Le Teil',
+  'Tournon-sur-Rhone',
+  'Bourg-Saint-Andeol',
+  
+  // Puy-de-Dôme (63)
+  'Clermont-Ferrand',
+  'Cournon-d\'Auvergne',
+  'Riom',
+  'Chamalieres',
+  'Issoire',
+  'Thiers',
+  'Beaumont',
+  'Aubiere',
+  'Pont-du-Chateau',
+  'Gerzat',
+  
+  // Allier (03)
+  'Montlucon',
+  'Vichy',
+  'Moulins',
+  'Cusset',
+  'Yzeure',
+  'Domerat',
+  'Bellerive-sur-Allier',
+  
+  // Cantal (15)
+  'Aurillac',
+  'Saint-Flour',
+  'Arpajon-sur-Cere',
+  'Mauriac',
+  
+  // Haute-Loire (43)
+  'Le Puy-en-Velay',
+  'Monistrol-sur-Loire',
+  'Yssingeaux',
+  'Brioude',
+  'Sainte-Sigolene',
+];
+
+export const citiesSorted = [...cities].sort((a, b) => a.localeCompare(b, 'fr'));

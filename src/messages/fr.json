@@ -1,0 +1,177 @@
+{
+  "metadata": {
+    "title": "ASARA - Association des Syriens Auvergne Rhône-Alpes",
+    "description": "Rejoignez la communauté syrienne de la région Auvergne Rhône-Alpes"
+  },
+  "nav": {
+    "home": "Accueil",
+    "directory": "Annuaire",
+    "events": "Événements",
+    "contact": "Contact",
+    "login": "Connexion",
+    "myAccount": "Mon compte",
+    "logout": "Déconnexion",
+    "admin": "Admin"
+  },
+  "home": {
+    "hero": {
+      "title": "ASARA",
+      "subtitle": "Association des Syriens d'Auvergne Rhône-Alpes"
+    },
+    "events": {
+      "title": "Événements",
+      "viewAll": "Voir tout",
+      "noEvents": "Aucun événement pour le moment"
+    },
+    "news": {
+      "title": "Actualités"
+    },
+    "cta": {
+      "title": "Rejoignez notre communauté",
+      "subtitle": "Devenez membre de l'association et bénéficiez de nombreux avantages.",
+      "professional": "Professionnel - 100 €/an",
+      "member": "Membre - 15 €/an"
+    }
+  },
+  "directory": {
+    "title": "Annuaire des professionnels",
+    "subtitle": "Trouvez des professionnels syriens dans votre région",
+    "search": "Rechercher un professionnel...",
+    "allCategories": "Toutes les catégories",
+    "allCities": "Toutes les villes",
+    "noProfessionals": "Aucun professionnel trouvé",
+    "viewProfile": "Voir le profil",
+    "professionals": "professionnels"
+  },
+  "categories": {
+    "Santé": "Santé",
+    "Juridique": "Juridique",
+    "Finance": "Finance",
+    "Immobilier": "Immobilier",
+    "Restauration": "Restauration",
+    "Commerce": "Commerce",
+    "Artisanat": "Artisanat",
+    "Technologie": "Technologie",
+    "Education": "Éducation",
+    "Transport": "Transport",
+    "Beauté": "Beauté & Bien-être",
+    "Construction": "Construction",
+    "Autre": "Autre"
+  },
+  "events": {
+    "title": "Événements",
+    "backToHome": "Retour à l'accueil",
+    "noEvents": "Aucun événement pour le moment",
+    "document": "Document PDF"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "N'hésitez pas à nous contacter",
+    "form": {
+      "name": "Nom complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "subject": "Sujet",
+      "message": "Message",
+      "send": "Envoyer",
+      "sending": "Envoi en cours...",
+      "success": "Message envoyé avec succès !",
+      "error": "Une erreur est survenue"
+    },
+    "subjects": {
+      "information": "Demande d'information",
+      "membership": "Adhésion",
+      "directory": "Annuaire",
+      "event": "Événement",
+      "partnership": "Partenariat",
+      "other": "Autre"
+    },
+    "info": {
+      "address": "Adresse",
+      "email": "Email",
+      "phone": "Téléphone",
+      "hours": "Horaires",
+      "hoursValue": "Lun - Ven : 9h - 18h"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "email": "Email",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "loading": "Connexion...",
+      "noAccount": "Pas encore membre ?",
+      "register": "Rejoignez-nous"
+    },
+    "register": {
+      "title": "Inscription",
+      "professional": "Professionnel",
+      "member": "Membre",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "S'inscrire",
+      "loading": "Inscription...",
+      "hasAccount": "Déjà membre ?",
+      "login": "Connectez-vous"
+    }
+  },
+  "account": {
+    "title": "Mon compte",
+    "personalInfo": "Informations personnelles",
+    "professionalInfo": "Informations professionnelles",
+    "subscription": "Abonnement",
+    "save": "Enregistrer",
+    "saving": "Enregistrement..."
+  },
+  "membership": {
+    "professional": {
+      "title": "Adhésion Professionnel",
+      "price": "100 €/an",
+      "benefits": {
+        "title": "Avantages",
+        "directory": "Visibilité dans l'annuaire",
+        "profile": "Page profil dédiée",
+        "events": "Accès aux événements",
+        "network": "Réseau professionnel"
+      }
+    },
+    "member": {
+      "title": "Adhésion Membre",
+      "price": "15 €/an",
+      "benefits": {
+        "title": "Avantages",
+        "events": "Accès aux événements",
+        "community": "Faire partie de la communauté",
+        "support": "Soutenir l'association"
+      }
+    }
+  },
+  "footer": {
+    "description": "Association des Syriens d'Auvergne Rhône-Alpes",
+    "quickLinks": "Liens rapides",
+    "contact": "Contact",
+    "followUs": "Suivez-nous",
+    "rights": "Tous droits réservés"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "retry": "Réessayer",
+    "back": "Retour",
+    "next": "Suivant",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "close": "Fermer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "noResults": "Aucun résultat"
+  }
+}

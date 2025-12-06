@@ -1,0 +1,177 @@
+{
+  "metadata": {
+    "title": "أسارا  - جمعية السوريين في أوفيرن رون ألب",
+    "description": "انضموا إلى المجتمع السوري في منطقة أوفيرن رون ألب"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "directory": "الدليل",
+    "events": "الفعاليات",
+    "contact": "اتصل بنا",
+    "login": "تسجيل الدخول",
+    "myAccount": "حسابي",
+    "logout": "تسجيل الخروج",
+    "admin": "الإدارة"
+  },
+  "home": {
+    "hero": {
+      "title": "أسارا ",
+      "subtitle": "جمعية السوريين في أوفيرن رون ألب"
+    },
+    "events": {
+      "title": "الفعاليات",
+      "viewAll": "عرض الكل",
+      "noEvents": "لا توجد فعاليات حالياً"
+    },
+    "news": {
+      "title": "الأخبار"
+    },
+    "cta": {
+      "title": "انضموا إلى مجتمعنا",
+      "subtitle": "كونوا أعضاء في الجمعية واستفيدوا من مزايا عديدة",
+      "professional": "مهني - 100 €/سنة",
+      "member": "عضو - 15 €/سنة"
+    }
+  },
+  "directory": {
+    "title": "دليل المهنيين",
+    "subtitle": "ابحثوا عن مهنيين سوريين في منطقتكم",
+    "search": "البحث عن مهني...",
+    "allCategories": "جميع الفئات",
+    "allCities": "جميع المدن",
+    "noProfessionals": "لم يتم العثور على مهنيين",
+    "viewProfile": "عرض الملف",
+    "professionals": "مهني"
+  },
+  "categories": {
+    "Santé": "الصحة",
+    "Juridique": "القانون",
+    "Finance": "المالية",
+    "Immobilier": "العقارات",
+    "Restauration": "المطاعم",
+    "Commerce": "التجارة",
+    "Artisanat": "الحرف اليدوية",
+    "Technologie": "التكنولوجيا",
+    "Education": "التعليم",
+    "Transport": "النقل",
+    "Beauté": "الجمال والعناية",
+    "Construction": "البناء",
+    "Autre": "أخرى"
+  },
+  "events": {
+    "title": "الفعاليات",
+    "backToHome": "العودة إلى الرئيسية",
+    "noEvents": "لا توجد فعاليات حالياً",
+    "document": "مستند PDF"
+  },
+  "contact": {
+    "title": "اتصل بنا",
+    "subtitle": "لا تترددوا في التواصل معنا",
+    "form": {
+      "name": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "subject": "الموضوع",
+      "message": "الرسالة",
+      "send": "إرسال",
+      "sending": "جاري الإرسال...",
+      "success": "تم إرسال الرسالة بنجاح!",
+      "error": "حدث خطأ"
+    },
+    "subjects": {
+      "information": "طلب معلومات",
+      "membership": "العضوية",
+      "directory": "الدليل",
+      "event": "فعالية",
+      "partnership": "شراكة",
+      "other": "أخرى"
+    },
+    "info": {
+      "address": "العنوان",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "hours": "ساعات العمل",
+      "hoursValue": "الاثنين - الجمعة: 9 - 18"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "تسجيل الدخول",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "submit": "دخول",
+      "loading": "جاري الدخول...",
+      "noAccount": "لست عضواً بعد؟",
+      "register": "انضم إلينا"
+    },
+    "register": {
+      "title": "التسجيل",
+      "professional": "مهني",
+      "member": "عضو",
+      "firstName": "الاسم",
+      "lastName": "اللقب",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "submit": "تسجيل",
+      "loading": "جاري التسجيل...",
+      "hasAccount": "لديك حساب؟",
+      "login": "سجل دخولك"
+    }
+  },
+  "account": {
+    "title": "حسابي",
+    "personalInfo": "المعلومات الشخصية",
+    "professionalInfo": "المعلومات المهنية",
+    "subscription": "الاشتراك",
+    "save": "حفظ",
+    "saving": "جاري الحفظ..."
+  },
+  "membership": {
+    "professional": {
+      "title": "عضوية مهني",
+      "price": "100 €/سنة",
+      "benefits": {
+        "title": "المزايا",
+        "directory": "الظهور في الدليل",
+        "profile": "صفحة ملف شخصي",
+        "events": "حضور الفعاليات",
+        "network": "شبكة مهنية"
+      }
+    },
+    "member": {
+      "title": "عضوية عادية",
+      "price": "15 €/سنة",
+      "benefits": {
+        "title": "المزايا",
+        "events": "حضور الفعاليات",
+        "community": "الانتماء للمجتمع",
+        "support": "دعم الجمعية"
+      }
+    }
+  },
+  "footer": {
+    "description": "جمعية السوريين في أوفيرن رون ألب",
+    "quickLinks": "روابط سريعة",
+    "contact": "اتصل بنا",
+    "followUs": "تابعونا",
+    "rights": "جميع الحقوق محفوظة"
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "retry": "إعادة المحاولة",
+    "back": "رجوع",
+    "next": "التالي",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "close": "إغلاق",
+    "search": "بحث",
+    "filter": "تصفية",
+    "noResults": "لا توجد نتائج"
+  }
+}
