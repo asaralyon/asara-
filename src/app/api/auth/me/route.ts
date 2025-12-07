@@ -21,6 +21,11 @@ export async function GET() {
       where: { id: payload.userId as string },
       include: {
         profile: true,
+        subscriptions: {
+          where: { status: 'ACTIVE' },
+          orderBy: { currentPeriodEnd: 'desc' },
+          take: 1,
+        },
       },
     });
 
@@ -37,9 +42,13 @@ export async function GET() {
       firstName: user.firstName,
       lastName: user.lastName,
       phone: user.phone,
+      address: user.address,
+      city: user.city,
+      postalCode: user.postalCode,
       role: user.role,
       status: user.status,
       profile: user.profile,
+      subscription: user.subscriptions[0] || null,
     });
   } catch (error) {
     return NextResponse.json(

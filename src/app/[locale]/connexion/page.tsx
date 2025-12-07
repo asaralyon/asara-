@@ -23,26 +23,30 @@ export default async function LoginPage({ params }: { params: { locale: string }
   await checkAuthAndRedirect(params.locale);
 
   // ✅ Utilise 'auth.login', conforme à votre fr.json/ar.json
-  const t = await getTranslations('auth.login');
+    const t = await getTranslations('auth.login');
+  
+      return (
+    <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white flex items-center justify-center py-12 px-4" >
+      <div className="w-full max-w-md">
+        <div className="card">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold">{t('title')}</h1>
+          </div>
 
-  return (
-    <div className="container py-12 max-w-md mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold">{t('title')}</h1>
-      </div>
+          <LoginForm locale={params.locale} />
 
-      {/* ✅ locale passé en props */}
-      <LoginForm locale={params.locale} />
-
-      <div className="mt-6 text-center text-sm">
-        <span>{t('noAccount')}</span>{' '}
-        <a
-          href={`/${params.locale}/adhesion`}
-          className="text-blue-600 hover:underline font-medium"
-        >
-          {t('register')}
-        </a>
+          <div className="mt-6 text-center text-sm">
+            <span>{t('noAccount')}</span>{' '}
+            <a
+              href={`/${params.locale}/adhesion`}
+              className="text-secondary-500 hover:text-secondary-600 font-semibold"
+            >
+              {t('register')}
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+
+  }

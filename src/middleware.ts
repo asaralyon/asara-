@@ -2,7 +2,6 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
-import { cookies } from 'next/headers';
 import { locales, defaultLocale } from './i18n';
 
 const intlMiddleware = createMiddleware({
@@ -11,22 +10,34 @@ const intlMiddleware = createMiddleware({
   localePrefix: 'always',
 });
 
-// Routes publiques — ne nécessitent pas d’auth
+// Routes publiques (accessibles sans connexion)
 const publicPaths = [
+  '', // Page d'accueil
   'connexion',
   'inscription',
-  '/mot-de-passe-oublie',
-  '/confirmation',
-  // Ajoutez d'autres routes publiques si besoin
+  'adhesion',
+  'mot-de-passe-oublie',
+  'confirmation',
+  'contact',
+  'annuaire',
+  'evenements',
+  'actualites',
+  'mentions-legales',
+  'politique-confidentialite',
+];
+
+// Routes réservées aux utilisateurs connectés
+const protectedPaths = [
+  'mon-compte',
 ];
 
 // Routes réservées aux admins
 const adminPaths = ['admin'];
 
 export async function middleware(request: NextRequest) {
-  const { pathname, search } = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
-  // 1️⃣ Exclure les routes API & statiques (comme avant)
+  // 1️⃣ Exclure les routes API & statiques
   if (
     pathname.startsWith('/api/') ||
     pathname.startsWith('/_next') ||
@@ -37,18 +48,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2️⃣ Appliquer d'abord l'internationalisation
+  // 2️⃣ Appliquer l'internationalisation
   const intlResponse = intlMiddleware(request);
-  // ⚠️ Important : on doit cloner l’URL après intlMiddleware car le préfixe locale est ajouté
   const url = new URL(intlResponse.headers.get('x-middleware-rewrite') || request.url);
-  const finalPathname = url.pathname; // ex: /fr/connexion, /ar/mon-compte
+  const finalPathname = url.pathname;
 
-  // 3️⃣ Extraire le locale et le "reste" du chemin
+  // 3️⃣ Extraire locale et chemin
   const localeMatch = finalPathname.match(/^\/([a-z]{2})\/(.*)/);
   const currentLocale = localeMatch?.[1] || defaultLocale;
-  const pathWithoutLocale = localeMatch?.[2] || finalPathname.substring(1); // "connexion", "mon-compte", etc.
+  const pathWithoutLocale = localeMatch?.[2] || '';
 
-  // 4️⃣ Vérifier le token (si présent)
+  // 4️⃣ Vérifier le token
   const token = request.cookies.get('token')?.value;
   let user = null;
 
@@ -58,49 +68,34 @@ export async function middleware(request: NextRequest) {
       const { payload } = await jwtVerify(token, secret);
       user = payload;
     } catch {
-      // Token invalide → on l’efface
       const response = NextResponse.next();
       response.cookies.delete('token');
       return response;
     }
   }
 
-  // 5️⃣ Règles de redirection
+  // 5️⃣ Vérifier le type de page
+  const isPublicPath = publicPaths.some((p) => pathWithoutLocale === p || pathWithoutLocale.startsWith(p + '/'));
+  const isProtectedPath = protectedPaths.some((p) => pathWithoutLocale.startsWith(p));
+  const isAdminPath = adminPaths.some((p) => pathWithoutLocale.startsWith(p));
 
-  // ➤ Si connecté ET sur une page publique (ex: /connexion) → rediriger vers /mon-compte
-  const isPublicPage = publicPaths.some((p) => pathWithoutLocale.startsWith(p));
-  if (user && isPublicPage) {
+  // 6️⃣ Règles de redirection
+
+  // Si NON connecté et tente d'accéder à une page protégée → /connexion
+  if (!user && (isProtectedPath || isAdminPath)) {
+    const loginUrl = new URL(`/${currentLocale}/connexion`, request.url);
+    loginUrl.searchParams.set('returnTo', finalPathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Si connecté et tente d'accéder à /connexion ou /inscription → /mon-compte
+  if (user && (pathWithoutLocale === 'connexion' || pathWithoutLocale === 'inscription')) {
     return NextResponse.redirect(new URL(`/${currentLocale}/mon-compte`, request.url));
   }
 
-  // ➤ Si non connecté ET tente d’accéder à une page privée → rediriger vers /connexion
-  const isPrivatePage =
-    !isPublicPage &&
-    !adminPaths.some((p) => pathWithoutLocale.startsWith(p)) &&
-    pathWithoutLocale !== '' && // racine = landing page = publique
-    pathWithoutLocale !== 'mentions-legales' &&
-    pathWithoutLocale !== 'politique-confidentialite' &&
-    !pathWithoutLocale.startsWith('actualites');
-
-  if (!user && isPrivatePage && !adminPaths.some((p) => pathWithoutLocale.startsWith(p))) {
-    // Rediriger vers /connexion avec returnTo
-    const url = new URL(`/${currentLocale}/connexion`, request.url);
-    url.searchParams.set('returnTo', finalPathname);
-    return NextResponse.redirect(url);
-  }
-
-  // ➤ Admin : accès restreint
-  if (user && adminPaths.some((p) => pathWithoutLocale.startsWith(p))) {
-    if (user.role !== 'ADMIN') {
-      return NextResponse.redirect(new URL(`/${currentLocale}`, request.url));
-    }
-  }
-
-  // ➤ Si non connecté sur /admin → rediriger vers login
-  if (!user && adminPaths.some((p) => pathWithoutLocale.startsWith(p))) {
-    const url = new URL(`/${currentLocale}/connexion`, request.url);
-    url.searchParams.set('returnTo', finalPathname);
-    return NextResponse.redirect(url);
+  // Si connecté mais PAS admin et tente d'accéder à /admin → /
+  if (user && isAdminPath && user.role !== 'ADMIN') {
+    return NextResponse.redirect(new URL(`/${currentLocale}`, request.url));
   }
 
   // ✅ Sinon, laisser passer
@@ -108,7 +103,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next|_vercel|images|uploads|.*\\..*).*)',
-  ],
+  matcher: ['/((?!api|_next|_vercel|images|uploads|.*\\..*).*)*'],
 };

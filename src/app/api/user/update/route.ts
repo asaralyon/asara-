@@ -1,15 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 import prisma from '@/lib/prisma';
 
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   try {
     const token = cookies().get('token')?.value;
 
     if (!token) {
       return NextResponse.json(
-        { error: 'Non connecte' },
+        { error: 'Non connecté' },
         { status: 401 }
       );
     }
@@ -18,9 +18,10 @@ export async function PATCH(request: Request) {
     const { payload } = await jwtVerify(token, secret);
 
     const body = await request.json();
-    const { firstName, lastName, phone, address, city, postalCode, profile } = body;
+    const { firstName, lastName, phone, address, city, postalCode } = body;
 
-    const user = await prisma.user.update({
+    // Mise à jour des informations utilisateur
+    const updatedUser = await prisma.user.update({
       where: { id: payload.userId as string },
       data: {
         firstName,
@@ -32,28 +33,22 @@ export async function PATCH(request: Request) {
       },
     });
 
-    if (profile) {
-      await prisma.professionalProfile.update({
-        where: { userId: user.id },
-        data: {
-          profession: profile.profession,
-          companyName: profile.companyName,
-          description: profile.description,
-          address: profile.address,
-          city: profile.city,
-          postalCode: profile.postalCode,
-          professionalPhone: profile.professionalPhone,
-          professionalEmail: profile.professionalEmail,
-          website: profile.website,
-        },
-      });
-    }
-
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      user: {
+        id: updatedUser.id,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        phone: updatedUser.phone,
+        address: updatedUser.address,
+        city: updatedUser.city,
+        postalCode: updatedUser.postalCode,
+      },
+    });
   } catch (error) {
-    console.error('Update error:', error);
+    console.error('Error updating user:', error);
     return NextResponse.json(
-      { error: 'Erreur serveur' },
+      { error: 'Erreur lors de la mise à jour' },
       { status: 500 }
     );
   }

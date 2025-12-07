@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import prisma from '@/lib/prisma';
-import { UserActions } from '../../../components/admin/UserActions';
+import { UserActions } from '@/components/admin/UserActions';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 

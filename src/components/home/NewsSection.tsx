@@ -58,33 +58,31 @@ function NewsCard({ item }: { item: NewsItem }) {
       href={item.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex flex-col w-full bg-white rounded-xl overflow-hidden shadow hover:shadow-md transition"
+      className="flex bg-white rounded-xl overflow-hidden shadow hover:shadow-md transition"
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
-      <div
-        className={`w-full h-16 flex items-center px-6 border-b ${style.bg}`}
-        dir={isRTL ? 'rtl' : 'ltr'}
-      >
-        <span className={`text-lg font-semibold ${style.text}`}>
-          {item.source}
-        </span>
-      </div>
+      {/* Image à gauche (ou droite si RTL) */}
+      {item.image && (
+        <div className="w-32 sm:w-48 flex-shrink-0">
+          <img 
+            src={item.image} 
+            alt={item.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
-      <div className="p-4 flex flex-col flex-1">
-        <p
-          className={`font-medium leading-relaxed hover:text-primary-500 ${
-            isRTL ? 'text-right' : 'text-left'
-          }`}
-          dir={isRTL ? 'rtl' : 'ltr'}
-        >
+      {/* Contenu */}
+      <div className="flex-1 flex flex-col p-4">
+        <div className={`mb-2 ${style.bg} ${style.text} px-3 py-1 rounded-full text-xs font-semibold inline-block self-start`}>
+          {item.source}
+        </div>
+
+        <p className="font-medium leading-relaxed hover:text-primary-500 flex-1">
           {item.title}
         </p>
 
-        <div
-          className={`mt-auto pt-4 flex justify-between items-center border-t text-sm text-neutral-500 ${
-            isRTL ? 'flex-row-reverse' : ''
-          }`}
-          dir={isRTL ? 'rtl' : 'ltr'}
-        >
+        <div className="mt-4 flex justify-between items-center border-t pt-3 text-sm text-neutral-500">
           <span>{formatDate(item.pubDate)}</span>
           <ExternalLink className="w-4 h-4" />
         </div>
@@ -92,6 +90,7 @@ function NewsCard({ item }: { item: NewsItem }) {
     </a>
   );
 }
+
 
 export function NewsSection() {
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -145,7 +144,7 @@ export function NewsSection() {
     );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-4">
       {news.map((item, index) => (
         <NewsCard key={index} item={item} />
       ))}

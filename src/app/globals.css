@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ========================================
-   ASARA - Styles globaux
-   ======================================== */
-
-/* Base styles */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -16,202 +11,35 @@
     @apply text-neutral-800 bg-white;
   }
 
-  /* Focus styles accessibles — ✅ CORRIGÉ */
   *:focus-visible {
-    outline: 2px solid theme('colors.primary.500');
+    outline: 2px solid #2D8C3C;
     outline-offset: 2px;
   }
 }
 
-/* Components réutilisables */
 @layer components {
-  /* Container */
-  .container-app {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  /* Sections */
-  .section {
-    @apply py-12 sm:py-16 lg:py-20;
-  }
-
-  /* Cards */
   .card {
-    @apply bg-white rounded-2xl p-6 shadow-soft;
+    @apply bg-white rounded-2xl p-6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
-  /* Boutons */
   .btn-primary {
     @apply inline-flex items-center justify-center px-6 py-3 
            bg-primary-500 text-white font-semibold rounded-xl
-           hover:bg-primary-600 transition-colors duration-200
-           focus:ring-2 focus:ring-primary-500/50 focus:ring-offset-2;
+           hover:bg-primary-600 transition-colors duration-200;
   }
 
-  .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 
-           bg-white text-primary-600 font-semibold rounded-xl
-           border-2 border-primary-500
-           hover:bg-primary-50 transition-colors duration-200
-           focus:ring-2 focus:ring-primary-500/50 focus:ring-offset-2;
-  }
-
-  .btn-outline {
-    @apply inline-flex items-center justify-center px-6 py-3 
-           bg-transparent text-neutral-700 font-semibold rounded-xl
-           border-2 border-neutral-300
-           hover:border-neutral-400 hover:bg-neutral-50 
-           transition-colors duration-200;
-  }
-
-  /* Inputs */
   .input {
     @apply w-full px-4 py-3 rounded-xl border border-neutral-300
            focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20
            transition-colors duration-200 outline-none;
   }
 
-  .input-error {
-    @apply border-red-500 focus:border-red-500 focus:ring-red-500/20;
-  }
-
-  /* Labels */
   .label {
     @apply block text-sm font-medium text-neutral-700 mb-2;
-  }
-
-  /* Badges */
-  .badge {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
-  }
-
-  .badge-primary {
-    @apply bg-primary-100 text-primary-700;
-  }
-
-  .badge-success {
-    @apply bg-green-100 text-green-700;
-  }
-
-  .badge-warning {
-    @apply bg-yellow-100 text-yellow-700;
-  }
-
-  .badge-error {
-    @apply bg-red-100 text-red-700;
-  }
-
-  /* Links */
-  .link {
-    @apply text-primary-500 hover:text-primary-600 
-           underline underline-offset-2 transition-colors;
-  }
-
-  /* Headings */
-  .heading-1 {
-    @apply text-3xl sm:text-4xl lg:text-5xl font-bold;
   }
 
   .heading-2 {
     @apply text-2xl sm:text-3xl font-bold;
   }
-
-  .heading-3 {
-    @apply text-xl sm:text-2xl font-semibold;
-  }
-}
-
-/* Utilities personnalisées */
-@layer utilities {
-  /* Text gradient */
-  .text-gradient {
-    @apply bg-gradient-to-r from-primary-500 to-primary-600 
-           bg-clip-text text-transparent;
-  }
-
-  /* Line clamp */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* Animation */
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-in-out;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Aspect ratios */
-  .aspect-card {
-    aspect-ratio: 4/3;
-  }
-
-  .aspect-profile {
-    aspect-ratio: 1/1;
-  }
-
-  /* ✅ Fallback explicite (optionnel mais robuste) */
-  .outline-primary-500 {
-    outline-color: #0ea5e9 !important;
-  }
-}
-
-/* RTL Support */
-[dir="rtl"] {
-  .text-left {
-    text-align: right;
-  }
-  
-  .text-right {
-    text-align: left;
-  }
-  
-  .ml-auto {
-    margin-left: 0;
-    margin-right: auto;
-  }
-  
-  .mr-auto {
-    margin-right: 0;
-    margin-left: auto;
-  }
-}
-
-/* Scrollbar personnalisée */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-neutral-100;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-neutral-300 rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-neutral-400;
 }

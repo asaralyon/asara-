@@ -8,8 +8,7 @@ import { Loader2, AlertCircle } from 'lucide-react';
 interface LoginFormProps {
   locale: string;
 }
-
-export default function LoginForm({ locale }: LoginFormProps) {
+export function LoginForm({ locale }: LoginFormProps) {
   const router = useRouter();
   const t = useTranslations('auth.login');
   const isRTL = locale === 'ar';
@@ -105,7 +104,7 @@ export default function LoginForm({ locale }: LoginFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-75 flex items-center justify-center gap-2"
+        className="btn-primary w-full"
       >
         {loading ? (
           <>

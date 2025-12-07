@@ -93,7 +93,7 @@ export default async function HomePage({ params }: Props) {
                         <img
                           src={event.documentUrl}
                           alt={event.title}
-                          className="w-full h-64 object-cover rounded-xl"
+                          className="w-full aspect-video object-contain rounded-xl bg-neutral-100"
                         />
                       )
                     ) : (
@@ -102,21 +102,21 @@ export default async function HomePage({ params }: Props) {
                           <img
                             src={event.imageUrl1}
                             alt={event.title}
-                            className="w-full h-64 object-cover rounded-xl"
+                            className="w-full aspect-video object-contain rounded-xl bg-neutral-100"
                           />
                         )}
                         {event.imageUrl2 && (
                           <img
                             src={event.imageUrl2}
                             alt={event.title}
-                            className="w-full h-64 object-cover rounded-xl"
+                            className="w-full aspect-video object-contain rounded-xl bg-neutral-100"
                           />
                         )}
                         {event.imageUrl3 && (
                           <img
                             src={event.imageUrl3}
                             alt={event.title}
-                            className="w-full h-64 object-cover rounded-xl"
+                            className="w-full aspect-video object-contain rounded-xl bg-neutral-100"
                           />
                         )}
                         {!event.imageUrl1 && !event.imageUrl2 && !event.imageUrl3 && (

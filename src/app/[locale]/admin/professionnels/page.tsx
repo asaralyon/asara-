@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import prisma from '@/lib/prisma';
 import Link from 'next/link';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
-import { ProfessionalActions } from '../../../components/admin/ProfessionalActions';
+import { ProfessionalActions } from '@/components/admin/ProfessionalActions';
 export const metadata: Metadata = {
   title: 'Professionnels - Admin',
 };

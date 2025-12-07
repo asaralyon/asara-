@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 import { getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 
 export default async function AccountPage({ params }: { params: { locale: string } }) {
   const { locale } = params;
@@ -23,7 +24,8 @@ export default async function AccountPage({ params }: { params: { locale: string
       cache: 'no-store',
     });
     if (!res.ok) throw new Error('User fetch failed');
-    user = await res.json();
+    const data = await res.json();
+    user = data;
   } catch {
     redirect(`/${locale}/connexion`);
   }
@@ -33,19 +35,52 @@ export default async function AccountPage({ params }: { params: { locale: string
   const tCommon = await getTranslations({ locale, namespace: 'common' });
   const isRTL = locale === 'ar';
 
+  // ✅ Formater les dates
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return isRTL ? 'غير محدد' : 'Non défini';
+    const date = new Date(dateString);
+    if (isRTL) {
+      return date.toLocaleDateString('ar-SA', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  };
+
+  // ✅ Traduire la catégorie
+  const translateCategory = (category: string) => {
+    const categoryMap: { [key: string]: { fr: string; ar: string } } = {
+      'Sante': { fr: 'Santé', ar: 'الصحة' },
+      'Juridique': { fr: 'Juridique', ar: 'القانون' },
+      'Finance': { fr: 'Finance', ar: 'المالية' },
+      'Immobilier': { fr: 'Immobilier', ar: 'العقارات' },
+      'Restauration': { fr: 'Restauration', ar: 'المطاعم' },
+      'Commerce': { fr: 'Commerce', ar: 'التجارة' },
+      'Artisanat': { fr: 'Artisanat', ar: 'الحرف اليدوية' },
+      'Technologie': { fr: 'Technologie', ar: 'التكنولوجيا' },
+      'Education': { fr: 'Éducation', ar: 'التعليم' },
+      'Transport': { fr: 'Transport', ar: 'النقل' },
+      'Beaute et Bien-etre': { fr: 'Beauté & Bien-être', ar: 'الجمال والعناية' },
+      'Batiment': { fr: 'Construction', ar: 'البناء' },
+      'Informatique': { fr: 'Technologie', ar: 'التكنولوجيا' },
+      'Autre': { fr: 'Autre', ar: 'أخرى' },
+    };
+    
+    const translation = categoryMap[category];
+    return translation ? (isRTL ? translation.ar : translation.fr) : category;
+  };
+
   return (
-    <main dir={isRTL ? 'rtl' : 'ltr'}>
-      <section className="section bg-neutral-50 min-h-screen">
+    <main dir={isRTL ? 'rtl' : 'ltr'} className="bg-gradient-to-b from-primary-50 to-white">
+      <section className="section min-h-screen py-12">
         <div className="container-app">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold">{t('title')}</h1>
+            <h1 className="text-3xl font-bold text-neutral-800">{t('title')}</h1>
             <form action="/api/auth/logout" method="POST" className="inline">
               <button
                 type="submit"
-                className="flex items-center gap-2 text-red-500 hover:text-red-600 font-medium"
+                className="flex items-center gap-2 text-red-500 hover:text-red-600 font-medium transition-colors"
                 aria-label={isRTL ? 'تسجيل الخروج' : 'Déconnexion'}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
                 </svg>
                 {isRTL ? 'تسجيل الخروج' : 'Déconnexion'}
@@ -53,21 +88,57 @@ export default async function AccountPage({ params }: { params: { locale: string
             </form>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-6">
+          <div className="grid lg:grid-cols-3 gap-8">
             {/* Informations personnelles */}
             <div className="lg:col-span-2 card">
-              <div className="flex items-center gap-3 mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                </svg>
-                <h2 className="text-lg font-semibold">{t('personalInfo')}</h2>
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-primary-600" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                  </div>
+                  <h2 className="text-xl font-semibold text-neutral-800">{t('personalInfo')}</h2>
+                </div>
+                {/* ✅ Bouton Modifier */}
+                <Link href={`/${locale}/mon-compte/modifier`} className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm shadow-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                  </svg>
+                  <span>{t('editInfo')}</span>
+                </Link>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div><strong>{isRTL ? 'الاسم:' : 'Prénom :'}</strong> {user.firstName || '—'}</div>
-                <div><strong>{isRTL ? 'اللقب:' : 'Nom :'}</strong> {user.lastName || '—'}</div>
-                <div><strong>{isRTL ? 'البريد الإلكتروني:' : 'Email :'}</strong> {user.email || '—'}</div>
-                <div><strong>{isRTL ? 'الهاتف:' : 'Téléphone :'}</strong> {user.phone || '—'}</div>
+              <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4 text-neutral-700">
+                <div className="flex flex-col">
+                  <span className="text-sm text-neutral-500 mb-1">{t('firstName')}</span>
+                  <span className="font-medium text-neutral-900">{user.firstName || '—'}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm text-neutral-500 mb-1">{t('lastName')}</span>
+                  <span className="font-medium text-neutral-900">{user.lastName || '—'}</span>
+                </div>
+                <div className="flex flex-col sm:col-span-2">
+                  <span className="text-sm text-neutral-500 mb-1">{t('email')}</span>
+                  <span className="font-medium text-neutral-900">{user.email || '—'}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm text-neutral-500 mb-1">{t('phone')}</span>
+                  <span className="font-medium text-neutral-900">{user.phone || '—'}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm text-neutral-500 mb-1">{t('city')}</span>
+                  <span className="font-medium text-neutral-900">{user.city || '—'}</span>
+                </div>
+                {/* ✅ Adresse complète */}
+                {user.address && (
+                  <div className="flex flex-col sm:col-span-2">
+                    <span className="text-sm text-neutral-500 mb-1">{t('address')}</span>
+                    <span className="font-medium text-neutral-900">
+                      {user.address}{user.postalCode && `, ${user.postalCode}`}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -75,40 +146,102 @@ export default async function AccountPage({ params }: { params: { locale: string
             <div className="space-y-6">
               {user.role === 'PROFESSIONAL' && user.profile && (
                 <div className="card">
-                  <div className="flex items-center gap-3 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/>
-                    </svg>
-                    <h2 className="text-lg font-semibold">{t('professionalInfo')}</h2>
+                  <div className="flex items-center justify-between mb-4 pb-4 border-b border-neutral-200">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-secondary-100 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-secondary-600" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/>
+                        </svg>
+                      </div>
+                      <h2 className="text-lg font-semibold text-neutral-800">{t('professionalInfo')}</h2>
+                    </div>
+                    {/* ✅ Bouton Modifier Infos Pro */}
+                    <Link href={`/${locale}/mon-compte/modifier-professionnel`} className="text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center gap-1.5 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                      {isRTL ? 'تعديل' : 'Modifier'}
+                    </Link>
                   </div>
-                  <div className="space-y-2 text-neutral-600">
-                    <p><strong>{isRTL ? 'الشركة:' : 'Entreprise :'}</strong> {user.profile.companyName || '—'}</p>
-                    <p><strong>{isRTL ? 'المهنة:' : 'Profession :'}</strong> {user.profile.profession || '—'}</p>
-                    <p><strong>{isRTL ? 'الفئة:' : 'Catégorie :'}</strong> {user.profile.category || '—'}</p>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex flex-col">
+                      <span className="text-xs text-neutral-500 mb-1">{t('companyName')}</span>
+                      <span className="font-medium text-neutral-900">{user.profile.companyName || '—'}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs text-neutral-500 mb-1">{t('profession')}</span>
+                      <span className="font-medium text-neutral-900">{user.profile.profession || '—'}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs text-neutral-500 mb-1">{t('category')}</span>
+                      <span className="font-medium text-neutral-900">{translateCategory(user.profile.category) || '—'}</span>
+                    </div>
+                    {user.profile.professionalPhone && (
+                      <div className="flex flex-col">
+                        <span className="text-xs text-neutral-500 mb-1">{t('professionalPhone')}</span>
+                        <span className="font-medium text-neutral-900">{user.profile.professionalPhone}</span>
+                      </div>
+                    )}
+                    {user.profile.professionalEmail && (
+                      <div className="flex flex-col">
+                        <span className="text-xs text-neutral-500 mb-1">{t('professionalEmail')}</span>
+                        <span className="font-medium text-neutral-900 break-all">{user.profile.professionalEmail}</span>
+                      </div>
+                    )}
+                    {user.profile.website && (
+                      <div className="flex flex-col">
+                        <span className="text-xs text-neutral-500 mb-1">{t('website')}</span>
+                        <a href={user.profile.website} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline font-medium break-all">
+                          {user.profile.website}
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
 
               <div className="card">
-                <div className="flex items-center gap-3 mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="11" y2="11"/><path d="m7 16 2-2 2 2"/><path d="m13 12 2 2 2-2"/>
-                  </svg>
-                  <h2 className="text-lg font-semibold">{t('subscription')}</h2>
+                <div className="flex items-center gap-3 mb-4 pb-4 border-b border-neutral-200">
+                  <div className="w-10 h-10 rounded-full bg-accent-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-accent-600" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="11" y2="11"/><path d="m7 16 2-2 2 2"/><path d="m13 12 2 2 2-2"/>
+                    </svg>
+                  </div>
+                  <h2 className="text-lg font-semibold text-neutral-800">{t('subscription')}</h2>
                 </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-neutral-600">{isRTL ? 'النوع:' : 'Type :'}</span>
-                    <span className="font-medium">
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-neutral-600">{isRTL ? 'النوع:' : 'Type'}</span>
+                    <span className="font-semibold text-neutral-900">
                       {user.role === 'PROFESSIONAL' 
                         ? (isRTL ? 'مهني' : 'Professionnel')
                         : (isRTL ? 'عضو' : 'Membre')}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-neutral-600">{isRTL ? 'السعر:' : 'Prix :'}</span>
-                    <span className="font-medium">
+                  <div className="flex justify-between items-center">
+                    <span className="text-neutral-600">{isRTL ? 'السعر:' : 'Prix'}</span>
+                    <span className="font-semibold text-primary-600">
                       {user.role === 'PROFESSIONAL' ? '100 €/an' : '15 €/an'}
+                    </span>
+                  </div>
+                  <div className="border-t border-neutral-200 pt-3 mt-3"></div>
+                  {/* ✅ Date d'adhésion - TOUJOURS AFFICHÉE */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-neutral-600">{t('membershipStart')}</span>
+                    <span className="font-medium text-neutral-900">{formatDate(user.subscription?.currentPeriodStart)}</span>
+                  </div>
+                  {/* ✅ Date de renouvellement - TOUJOURS AFFICHÉE */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-neutral-600">{t('membershipEnd')}</span>
+                    <span className="font-medium text-neutral-900">{formatDate(user.subscription?.currentPeriodEnd)}</span>
+                  </div>
+                  {/* ✅ Statut de l'abonnement - TOUJOURS AFFICHÉ */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-neutral-600">{t('status')}</span>
+                    <span className={`font-semibold px-3 py-1 rounded-full text-xs ${user.subscription?.status === 'ACTIVE' ? 'bg-primary-100 text-primary-700' : 'bg-neutral-100 text-neutral-600'}`}>
+                      {user.subscription?.status === 'ACTIVE' 
+                        ? (isRTL ? 'نشط' : 'Actif') 
+                        : (isRTL ? 'غير محدد' : 'Non défini')}
                     </span>
                   </div>
                 </div>

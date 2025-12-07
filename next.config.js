@@ -12,6 +12,9 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config) => {
+    return config;
+  },
 };
 
 module.exports = withNextIntl(nextConfig);

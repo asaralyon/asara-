@@ -57,44 +57,91 @@ async function getProfessionals(searchParams: Props['searchParams']) {
   return professionals;
 }
 
+
 async function getCategories() {
+  // Liste des catégories traduites
+  const validCategories = [
+    'Sante', 'Juridique', 'Finance', 'Immobilier', 'Restauration',
+    'Commerce', 'Artisanat', 'Informatique', 'Education', 'Transport',
+    'Beaute et Bien-etre', 'Batiment', 'Autre'
+  ];
+  
   const categories = await prisma.category.findMany({
-    where: { isActive: true },
+    where: { 
+      isActive: true,
+      name: { in: validCategories }
+    },
     orderBy: { order: 'asc' },
   });
   return categories;
 }
 
+
 async function getCities() {
-  const profiles = await prisma.professionalProfile.findMany({
-    where: { isPublished: true, city: { not: null } },
-    select: { city: true },
-    distinct: ['city'],
-    orderBy: { city: 'asc' },
-  });
-  return profiles.map((p) => p.city).filter(Boolean) as string[];
+  // Villes d'Auvergne-Rhône-Alpes par département
+  const cities = [
+    // Ain (01)
+    'Bourg-en-Bresse', 'Oyonnax', 'Ambérieu-en-Bugey', 'Bellegarde-sur-Valserine', 'Gex', 'Ferney-Voltaire', 'Divonne-les-Bains', 'Belley', 'Meximieux', 'Miribel',
+    
+    // Allier (03)
+    'Moulins', 'Montluçon', 'Vichy', 'Cusset', 'Yzeure', 'Bellerive-sur-Allier', 'Commentry', 'Gannat', 'Dompierre-sur-Besbre', 'Désertines',
+    
+    // Ardèche (07)
+    'Annonay', 'Aubenas', 'Guilherand-Granges', 'Tournon-sur-Rhône', 'Privas', 'Le Teil', 'Bourg-Saint-Andéol', 'La Voulte-sur-Rhône', 'Saint-Péray', 'Vals-les-Bains',
+    
+    // Cantal (15)
+    'Aurillac', 'Saint-Flour', 'Mauriac', 'Arpajon-sur-Cère', 'Riom-ès-Montagnes', 'Ytrac', 'Murat', 'Ydes', 'Vic-sur-Cère', 'Maurs',
+    
+    // Drôme (26)
+    'Valence', 'Romans-sur-Isère', 'Montélimar', 'Pierrelatte', 'Bourg-lès-Valence', 'Portes-lès-Valence', 'Saint-Paul-Trois-Châteaux', 'Livron-sur-Drôme', 'Crest', 'Die',
+    
+    // Isère (38)
+    'Grenoble', 'Vienne', 'Échirolles', 'Bourgoin-Jallieu', 'Fontaine', 'Voiron', 'Saint-Martin-d\'Hères', 'Villefontaine', 'Meylan', 'L\'Isle-d\'Abeau', 'Sassenage', 'Vif', 'Roussillon', 'La Tour-du-Pin',
+    
+    // Loire (42)
+    'Saint-Étienne', 'Roanne', 'Saint-Chamond', 'Firminy', 'Montbrison', 'Rive-de-Gier', 'Riorges', 'Le Chambon-Feugerolles', 'Saint-Just-Saint-Rambert', 'Andrézieux-Bouthéon',
+    
+    // Haute-Loire (43)
+    'Le Puy-en-Velay', 'Monistrol-sur-Loire', 'Yssingeaux', 'Brioude', 'Sainte-Sigolène', 'Langeac', 'Vals-près-le-Puy', 'Craponne-sur-Arzon', 'Saint-Germain-Laprade', 'Aurec-sur-Loire',
+    
+    // Puy-de-Dôme (63)
+    'Clermont-Ferrand', 'Riom', 'Cournon-d\'Auvergne', 'Chamalières', 'Aubière', 'Beaumont', 'Issoire', 'Thiers', 'Gerzat', 'Pont-du-Château', 'Ambert', 'Lempdes',
+    
+    // Rhône (69)
+    'Lyon', 'Villeurbanne', 'Vénissieux', 'Vaulx-en-Velin', 'Caluire-et-Cuire', 'Bron', 'Rillieux-la-Pape', 'Saint-Priest', 'Oullins', 'Meyzieu', 'Décines-Charpieu', 'Givors', 'Tassin-la-Demi-Lune', 'Tarare',
+    
+    // Savoie (73)
+    'Chambéry', 'Aix-les-Bains', 'Albertville', 'La Motte-Servolex', 'Saint-Jean-de-Maurienne', 'Bourg-Saint-Maurice', 'Montmélian', 'Cognin', 'Ugine', 'Modane',
+    
+    // Haute-Savoie (74)
+    'Annecy', 'Thonon-les-Bains', 'Annemasse', 'Évian-les-Bains', 'Cluses', 'Seynod', 'Rumilly', 'Sallanches', 'Bonneville', 'Cran-Gevrier', 'Passy', 'Gaillard', 'Saint-Julien-en-Genevois', 'Archamps',
+  ].sort();
+  
+  return cities;
 }
+
 
 // Fonction pour traduire les catégories
 function translateCategory(category: string, locale: string): string {
   const translations: Record<string, Record<string, string>> = {
-    'Santé': { fr: 'Santé', ar: 'الصحة' },
+    'Sante': { fr: 'Santé', ar: 'الصحة' },
     'Juridique': { fr: 'Juridique', ar: 'القانون' },
     'Finance': { fr: 'Finance', ar: 'المالية' },
     'Immobilier': { fr: 'Immobilier', ar: 'العقارات' },
     'Restauration': { fr: 'Restauration', ar: 'المطاعم' },
     'Commerce': { fr: 'Commerce', ar: 'التجارة' },
-    'Artisanat': { fr: 'Artisanat', ar: 'الحرف اليدوية' },
-    'Technologie': { fr: 'Technologie', ar: 'التكنولوجيا' },
+    'Artisanat': { fr: 'Artisanat', ar: 'الصناعة اليدوية' },
+    'Informatique': { fr: 'Informatique', ar: 'تكنولوجيا المعلومات' },
     'Education': { fr: 'Éducation', ar: 'التعليم' },
     'Transport': { fr: 'Transport', ar: 'النقل' },
-    'Beauté': { fr: 'Beauté & Bien-être', ar: 'الجمال والعناية' },
-    'Construction': { fr: 'Construction', ar: 'البناء' },
+    'Beaute et Bien-etre': { fr: 'Beauté & Bien-être', ar: 'الجمال والرفاهية' },
+    'Batiment': { fr: 'Bâtiment', ar: 'البناء' },
     'Autre': { fr: 'Autre', ar: 'أخرى' },
   };
   
   return translations[category]?.[locale] || category;
 }
+
 
 export default async function DirectoryPage({ params, searchParams }: Props) {
   const { locale } = params;
