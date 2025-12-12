@@ -54,3 +54,7 @@ uploads/
 
 # Sentry
 .sentryclirc
+.env.production
+.env
+cookies.txt
+ecosystem.config.js
