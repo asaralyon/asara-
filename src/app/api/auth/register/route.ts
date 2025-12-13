@@ -3,10 +3,13 @@ import { hash } from 'bcryptjs';
 import prisma from '@/lib/prisma';
 import { sendEmail, emailTemplates } from '@/lib/email';
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-
+    console.log('Register attempt with email:', body.email);
+    
     const {
       firstName,
       lastName,
@@ -30,6 +33,8 @@ export async function POST(request: Request) {
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
+
+    console.log('Existing user found:', existingUser ? 'YES' : 'NO');
 
     if (existingUser) {
       return NextResponse.json(
@@ -66,6 +71,8 @@ export async function POST(request: Request) {
       },
     });
 
+    console.log('User created:', user.id);
+
     // Si professionnel, créer le profil
     if (role === 'PROFESSIONAL') {
       await prisma.professionalProfile.create({
@@ -88,26 +95,34 @@ export async function POST(request: Request) {
     }
 
     // Envoyer l'email de confirmation
-    const template = emailTemplates.inscriptionPending(firstName, role || 'MEMBER');
-    await sendEmail({
-      to: email,
-      subject: template.subject,
-      html: template.html,
-    });
+    try {
+      const template = emailTemplates.inscriptionPending(firstName, role || 'MEMBER');
+      await sendEmail({
+        to: email,
+        subject: template.subject,
+        html: template.html,
+      });
+    } catch (emailError) {
+      console.error('Email error (non-blocking):', emailError);
+    }
 
     // Notifier l'admin
-    await sendEmail({
-      to: 'info@asara-lyon.fr',
-      subject: `Nouvelle inscription - ${firstName} ${lastName}`,
-      html: `
-        <h2>Nouvelle inscription sur ASARA</h2>
-        <p><strong>Nom:</strong> ${firstName} ${lastName}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Type:</strong> ${role === 'PROFESSIONAL' ? 'Professionnel' : 'Membre'}</p>
-        ${role === 'PROFESSIONAL' ? `<p><strong>Profession:</strong> ${profession}</p>` : ''}
-        <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/utilisateurs">Voir dans l'admin</a></p>
-      `,
-    });
+    try {
+      await sendEmail({
+        to: 'info@asara-lyon.fr',
+        subject: `Nouvelle inscription - ${firstName} ${lastName}`,
+        html: `
+          <h2>Nouvelle inscription sur ASARA</h2>
+          <p><strong>Nom:</strong> ${firstName} ${lastName}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Type:</strong> ${role === 'PROFESSIONAL' ? 'Professionnel' : 'Membre'}</p>
+          ${role === 'PROFESSIONAL' ? `<p><strong>Profession:</strong> ${profession}</p>` : ''}
+          <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/utilisateurs">Voir dans l'admin</a></p>
+        `,
+      });
+    } catch (emailError) {
+      console.error('Admin email error (non-blocking):', emailError);
+    }
 
     return NextResponse.json({
       success: true,
