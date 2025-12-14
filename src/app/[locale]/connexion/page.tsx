@@ -14,7 +14,7 @@ export default async function LoginPage({ params }: { params: { locale: string }
     try {
       const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'secret-key');
       await jwtVerify(token, secret);
-      redirect(`/${locale}/mon-compte`);
+      redirect('/' + locale + '/mon-compte');
     } catch {
       console.log('Invalid token on connexion page, showing login form');
     }
@@ -32,10 +32,7 @@ export default async function LoginPage({ params }: { params: { locale: string }
           <LoginForm locale={locale} />
           <div className="mt-6 text-center text-sm">
             <span>{t('noAccount')}</span>{' '}
-            
-              href={`/${locale}/adhesion`}
-              className="text-secondary-500 hover:text-secondary-600 font-semibold"
-            >
+            <a href={'/' + locale + '/adhesion'} className="text-secondary-500 hover:text-secondary-600 font-semibold">
               {t('register')}
             </a>
           </div>
