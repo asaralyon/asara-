@@ -14,11 +14,8 @@ export default async function LoginPage({ params }: { params: { locale: string }
     try {
       const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'secret-key');
       await jwtVerify(token, secret);
-      // Token valide → redirect vers compte
       redirect(`/${locale}/mon-compte`);
     } catch {
-      // Token invalide → on continue et affiche la page
-      // Le cookie sera supprimé au prochain login
       console.log('Invalid token on connexion page, showing login form');
     }
   }
