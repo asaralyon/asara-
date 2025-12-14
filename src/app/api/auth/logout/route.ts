@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export const dynamic = "force-dynamic";
 
@@ -7,32 +8,14 @@ export async function POST(request: Request) {
   const localeMatch = referer.match(/\/(fr|ar)\//);
   const locale = localeMatch?.[1] || 'fr';
   
-  const response = NextResponse.redirect(new URL(`/${locale}`, request.url));
+  // Supprimer le cookie directement
+  cookies().delete('token');
   
-  // Supprimer le cookie de TOUTES les façons possibles
-  // Car il peut avoir été créé avec différentes configurations
+  // Créer la réponse avec suppression explicite
+  const response = NextResponse.redirect(new URL(`/${locale}/connexion`, request.url));
   
-  const deleteOptions = [
-    // Avec domain .asara-lyon.fr
-    { domain: '.asara-lyon.fr', path: '/' },
-    // Sans domain (pour cookies créés sans domain)
-    { path: '/' },
-    // Avec domain www.asara-lyon.fr
-    { domain: 'www.asara-lyon.fr', path: '/' },
-    // Avec domain asara-lyon.fr (sans point)
-    { domain: 'asara-lyon.fr', path: '/' },
-  ];
-  
-  for (const opts of deleteOptions) {
-    response.cookies.set('token', '', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      maxAge: 0,
-      expires: new Date(0),
-      ...opts,
-    });
-  }
+  // Forcer la suppression via Set-Cookie header
+  response.headers.append('Set-Cookie', 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax');
   
   return response;
 }

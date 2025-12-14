@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
 import { Menu, X, User } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
@@ -18,25 +19,33 @@ interface UserData {
 export function Header() {
   const t = useTranslations('nav');
   const locale = useLocale();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Vérifier l'auth à chaque changement de route
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch('/api/auth/me');
+        const res = await fetch('/api/auth/me', {
+          credentials: 'include',
+          cache: 'no-store',
+        });
         if (res.ok) {
           const data = await res.json();
-          setUser(data.user);
+          setUser(data);
+        } else {
+          setUser(null);
         }
       } catch {
-        // Non connecté
+        setUser(null);
       }
       setLoading(false);
     };
+    
     checkAuth();
-  }, []);
+  }, [pathname]); // Re-vérifier à chaque navigation
 
   const navigation = [
     { name: t('home'), href: `/${locale}` },
@@ -80,10 +89,8 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            {/* Language Switcher */}
             <LanguageSwitcher />
 
-            {/* User Menu */}
             {!loading && (
               <>
                 {user ? (
@@ -115,7 +122,6 @@ export function Header() {
               </>
             )}
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-2 text-neutral-600"
@@ -125,7 +131,6 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden py-4 border-t border-neutral-100">
             <nav className="flex flex-col gap-2">

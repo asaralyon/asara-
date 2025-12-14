@@ -44,25 +44,14 @@ export async function POST(request: Request) {
       .setExpirationTime('7d')
       .sign(secret);
 
-    // Configuration cookie adaptée à l'environnement
-    const isProduction = process.env.NODE_ENV === 'production';
-    const host = request.headers.get('host') || '';
-    const isCustomDomain = host.includes('asara-lyon.fr');
-
-    const cookieConfig: any = {
+    // Cookie simple sans domain - le navigateur gère automatiquement
+    cookies().set('token', token, {
       httpOnly: true,
-      secure: isProduction,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7,
       path: '/',
-    };
-
-    // Ajouter domain seulement pour le domaine custom
-    if (isCustomDomain) {
-      cookieConfig.domain = '.asara-lyon.fr';
-    }
-
-    cookies().set('token', token, cookieConfig);
+    });
 
     await prisma.user.update({
       where: { id: user.id },
