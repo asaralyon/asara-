@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export default function MemberSignupPage() {
   const router = useRouter();
@@ -14,6 +14,8 @@ export default function MemberSignupPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -35,6 +37,11 @@ export default function MemberSignupPage() {
       return;
     }
 
+    if (formData.password.length < 8) {
+      setError(isRTL ? 'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل' : 'Le mot de passe doit contenir au moins 8 caractères');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -51,14 +58,13 @@ export default function MemberSignupPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push(`/${locale}/adhesion/success`);
+        router.push('/' + locale + '/adhesion/success');
       } else {
         setError(data.error || (isRTL ? 'خطأ في التسجيل' : 'Erreur lors de l\'inscription'));
       }
     } catch {
       setError(isRTL ? 'خطأ في الاتصال' : 'Erreur de connexion');
     }
-
     setLoading(false);
   };
 
@@ -67,10 +73,10 @@ export default function MemberSignupPage() {
       <section className="section bg-neutral-50 min-h-screen">
         <div className="container-app">
           <Link
-            href={`/${locale}/adhesion`}
-            className={`inline-flex items-center gap-2 text-neutral-600 hover:text-primary-500 mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}
+            href={'/' + locale + '/adhesion'}
+            className={'inline-flex items-center gap-2 text-neutral-600 hover:text-primary-500 mb-6 ' + (isRTL ? 'flex-row-reverse' : '')}
           >
-            <ArrowLeft className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
+            <ArrowLeft className={'w-4 h-4 ' + (isRTL ? 'rotate-180' : '')} />
             {isRTL ? 'رجوع' : 'Retour'}
           </Link>
 
@@ -79,7 +85,9 @@ export default function MemberSignupPage() {
               <h1 className="text-2xl font-bold text-center mb-2">
                 {isRTL ? 'عضوية عادية' : 'Adhésion Membre'}
               </h1>
-              <p className="text-center text-neutral-600 mb-6">15 €/{isRTL ? 'سنة' : 'an'}</p>
+              <p className="text-neutral-600 text-center mb-8">
+                {isRTL ? 'انضم إلى مجتمع ASARA' : 'Rejoignez la communauté ASARA'}
+              </p>
 
               {error && (
                 <div className="flex items-center gap-2 p-4 bg-red-50 text-red-600 rounded-xl mb-6">
@@ -89,7 +97,6 @@ export default function MemberSignupPage() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Informations personnelles */}
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className="label">{t('firstName')} *</label>
@@ -135,6 +142,53 @@ export default function MemberSignupPage() {
                 </div>
 
                 <div>
+                  <label className="label">{t('password')} *</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      minLength={8}
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      className="input pr-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-neutral-600 transition-colors"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                  <p className="text-xs text-neutral-500 mt-1">
+                    {isRTL ? '8 أحرف على الأقل' : 'Minimum 8 caractères'}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="label">{t('confirmPassword')} *</label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      required
+                      minLength={8}
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                      className="input pr-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-neutral-600 transition-colors"
+                      tabIndex={-1}
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
                   <label className="label">{isRTL ? 'العنوان' : 'Adresse'}</label>
                   <input
                     type="text"
@@ -165,49 +219,27 @@ export default function MemberSignupPage() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="label">{t('password')} *</label>
-                  <input
-                    type="password"
-                    required
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="input"
-                  />
-                </div>
-
-                <div>
-                  <label className="label">{t('confirmPassword')} *</label>
-                  <input
-                    type="password"
-                    required
-                    value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    className="input"
-                  />
-                </div>
-
                 <button
                   type="submit"
                   disabled={loading}
-                  className="btn-primary w-full flex items-center justify-center gap-2"
+                  className="btn-primary w-full mt-6"
                 >
-                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {loading
-                    ? (isRTL ? 'جاري التسجيل...' : 'Inscription...')
-                    : (isRTL ? 'إتمام التسجيل' : 'S\'inscrire')}
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      {isRTL ? 'جاري التسجيل...' : 'Inscription en cours...'}
+                    </>
+                  ) : (
+                    isRTL ? 'إرسال الطلب' : 'Envoyer ma demande'
+                  )}
                 </button>
               </form>
 
-              <p className="text-center text-neutral-600 mt-6">
-                {t('hasAccount')}{' '}
-                <Link
-                  href={`/${locale}/connexion`}
-                  className="text-primary-500 hover:text-primary-600 font-medium"
-                >
-                  {t('login')}
-                </Link>
-              </p>
+              <div className="mt-6 p-4 bg-primary-50 rounded-xl text-center">
+                <p className="text-primary-700 font-medium">
+                  {isRTL ? 'رسوم العضوية: 15 يورو / سنة' : 'Cotisation : 15 € / an'}
+                </p>
+              </div>
             </div>
           </div>
         </div>
