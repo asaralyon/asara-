@@ -4,8 +4,9 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
-import { Calendar, Building2, Users, ArrowRight } from 'lucide-react';
+import { Calendar, Building2, Users, ArrowRight, Newspaper } from 'lucide-react';
 import { OrganizationJsonLd } from '@/components/seo/JsonLd';
+import { NewsSection } from '@/components/home/NewsSection';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   const { locale } = params;
@@ -86,6 +87,19 @@ export default async function HomePage({ params }: Props) {
               <p className="text-neutral-600">{isRTL ? 'انضم إلى جمعيتنا' : 'Rejoignez notre association'}</p>
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Actualités RSS */}
+      <section className="py-16 bg-white">
+        <div className="container-app">
+          <div className="flex items-center justify-center gap-3 mb-10">
+            <Newspaper className="w-8 h-8 text-primary-600" />
+            <h2 className="text-2xl sm:text-3xl font-bold">
+              {isRTL ? 'آخر الأخبار من سوريا' : 'Actualités de Syrie'}
+            </h2>
+          </div>
+          <NewsSection />
         </div>
       </section>
 
