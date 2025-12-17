@@ -20,13 +20,17 @@ function getSourceStyle(source: string) {
   switch (source) {
     case 'عنب بلدي':
       return { bg: 'bg-purple-100', text: 'text-purple-700' };
+
     case 'سانا':
     case 'SANA':
       return { bg: 'bg-green-100', text: 'text-green-700' };
+
     case 'وزارة الخارجية السورية':
       return { bg: 'bg-blue-100', text: 'text-blue-700' };
+
     case 'سوريا نيوز':
       return { bg: 'bg-pink-100', text: 'text-pink-700' };
+
     default:
       return { bg: 'bg-gray-100', text: 'text-gray-700' };
   }
@@ -35,10 +39,6 @@ function getSourceStyle(source: string) {
 function NewsCard({ item }: { item: NewsItem }) {
   const isRTL = isArabic(item.title);
   const style = getSourceStyle(item.source);
-  const [imgError, setImgError] = useState(false);
-
-  const defaultImage = '/images/logo.png';
-  const imageUrl = (!item.image || imgError) ? defaultImage : item.image;
 
   const formatDate = (dateString: string) => {
     try {
@@ -53,32 +53,32 @@ function NewsCard({ item }: { item: NewsItem }) {
     }
   };
 
-  const isDefaultImg = !item.image || imgError;
-
   return (
-    
+    <a
       href={item.link}
       target="_blank"
       rel="noopener noreferrer"
       className="flex bg-white rounded-xl overflow-hidden shadow hover:shadow-md transition"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      <div className="w-32 sm:w-48 flex-shrink-0 bg-neutral-100">
-        <img 
-          src={imageUrl}
-          alt={item.title}
-          className={'w-full h-full ' + (isDefaultImg ? 'object-contain p-4' : 'object-cover')}
-          onError={() => setImgError(true)}
-          loading="lazy"
-        />
-      </div>
+      {/* Image à gauche (ou droite si RTL) */}
+      {item.image && (
+        <div className="w-32 sm:w-48 flex-shrink-0">
+          <img 
+            src={item.image} 
+            alt={item.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
+      {/* Contenu */}
       <div className="flex-1 flex flex-col p-4">
-        <div className={'mb-2 px-3 py-1 rounded-full text-xs font-semibold inline-block self-start ' + style.bg + ' ' + style.text}>
+        <div className={`mb-2 ${style.bg} ${style.text} px-3 py-1 rounded-full text-xs font-semibold inline-block self-start`}>
           {item.source}
         </div>
 
-        <p className="font-medium leading-relaxed hover:text-primary-500 flex-1 line-clamp-3">
+        <p className="font-medium leading-relaxed hover:text-primary-500 flex-1">
           {item.title}
         </p>
 
@@ -91,6 +91,7 @@ function NewsCard({ item }: { item: NewsItem }) {
   );
 }
 
+
 export function NewsSection() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,7 +99,6 @@ export function NewsSection() {
 
   const fetchNews = async () => {
     try {
-      setLoading(true);
       setError(false);
       const res = await fetch('/api/news');
 
@@ -117,7 +117,7 @@ export function NewsSection() {
   useEffect(() => {
     fetchNews();
 
-    const interval = setInterval(fetchNews, 600000);
+    const interval = setInterval(fetchNews, 600000); // 10 minutes
     return () => clearInterval(interval);
   }, []);
 
