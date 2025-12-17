@@ -10,7 +10,6 @@ import { OrganizationJsonLd } from '@/components/seo/JsonLd';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   const { locale } = params;
-  const t = await getTranslations({ locale, namespace: 'home' });
   
   return {
     title: locale === 'ar' 
@@ -57,6 +56,8 @@ type Props = {
 export default async function HomePage({ params }: Props) {
   const { locale } = params;
   const t = await getTranslations('home');
+  const tNav = await getTranslations('nav');
+  const tCta = await getTranslations('home.cta');
   const [events, stats] = await Promise.all([getEvents(), getStats()]);
   const isRTL = locale === 'ar';
 
@@ -77,17 +78,17 @@ export default async function HomePage({ params }: Props) {
             priority
           />
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-600 mb-4">
-            {t('title')}
+            {t('hero.title')}
           </h1>
           <p className="text-lg sm:text-xl text-neutral-600 max-w-2xl mx-auto mb-8">
-            {t('subtitle')}
+            {t('hero.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href={'/' + locale + '/annuaire'} className="btn-primary">
-              {t('cta.directory')}
+              {tNav('directory')}
             </Link>
             <Link href={'/' + locale + '/adhesion'} className="btn-secondary">
-              {t('cta.join')}
+              {isRTL ? 'انضم إلينا' : 'Rejoignez-nous'}
             </Link>
           </div>
         </div>
@@ -203,12 +204,10 @@ export default async function HomePage({ params }: Props) {
       <section className="py-16 bg-primary-600">
         <div className="container-app text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            {isRTL ? 'انضم إلى مجتمعنا اليوم' : 'Rejoignez notre communauté aujourd\'hui'}
+            {tCta('title')}
           </h2>
           <p className="text-primary-100 mb-8 max-w-xl mx-auto">
-            {isRTL 
-              ? 'كن جزءًا من شبكة نشطة من السوريين في منطقة أوفيرن رون ألب'
-              : 'Faites partie d\'un réseau actif de Syriens dans la région Auvergne-Rhône-Alpes'}
+            {tCta('subtitle')}
           </p>
           <Link href={'/' + locale + '/adhesion'} className="inline-flex items-center gap-2 bg-white text-primary-600 px-8 py-3 rounded-xl font-semibold hover:bg-primary-50 transition-colors">
             {isRTL ? 'سجل الآن' : 'S\'inscrire maintenant'}
