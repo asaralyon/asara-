@@ -14,7 +14,9 @@ import {
   Loader2,
   Users,
   Clock,
-  ArrowLeft
+  ArrowLeft,
+  Link as LinkIcon,
+  X
 } from 'lucide-react';
 
 interface Article {
@@ -25,6 +27,12 @@ interface Article {
   authorEmail?: string;
   isPublished: boolean;
   createdAt: string;
+}
+
+interface NewsLink {
+  title: string;
+  url: string;
+  source: string;
 }
 
 interface NewsletterData {
@@ -46,6 +54,11 @@ export default function NewsletterPage() {
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Liens d'actualites personnalises (max 3)
+  const [newsLinks, setNewsLinks] = useState<NewsLink[]>([]);
+  const [showLinkForm, setShowLinkForm] = useState(false);
+  const [linkForm, setLinkForm] = useState({ title: '', url: '', source: '' });
+
   const [articleForm, setArticleForm] = useState({
     title: '',
     content: '',
@@ -57,7 +70,17 @@ export default function NewsletterPage() {
   useEffect(() => {
     fetchData();
     fetchArticles();
+    // Charger les liens depuis localStorage
+    const savedLinks = localStorage.getItem('newsletterLinks');
+    if (savedLinks) {
+      setNewsLinks(JSON.parse(savedLinks));
+    }
   }, []);
+
+  // Sauvegarder les liens dans localStorage
+  useEffect(() => {
+    localStorage.setItem('newsletterLinks', JSON.stringify(newsLinks));
+  }, [newsLinks]);
 
   const fetchData = async () => {
     try {
@@ -84,6 +107,25 @@ export default function NewsletterPage() {
     }
   };
 
+  const handleAddLink = () => {
+    if (!linkForm.title || !linkForm.url) {
+      setMessage({ type: 'error', text: 'Titre et URL requis' });
+      return;
+    }
+    if (newsLinks.length >= 3) {
+      setMessage({ type: 'error', text: 'Maximum 3 liens' });
+      return;
+    }
+    setNewsLinks([...newsLinks, { ...linkForm }]);
+    setLinkForm({ title: '', url: '', source: '' });
+    setShowLinkForm(false);
+    setMessage({ type: 'success', text: 'Lien ajoute' });
+  };
+
+  const handleRemoveLink = (index: number) => {
+    setNewsLinks(newsLinks.filter((_, i) => i !== index));
+  };
+
   const handleSendTest = async () => {
     if (!testEmail) {
       setMessage({ type: 'error', text: 'Veuillez entrer une adresse email' });
@@ -95,7 +137,7 @@ export default function NewsletterPage() {
       const res = await fetch('/api/newsletter/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ testEmail })
+        body: JSON.stringify({ testEmail, customLinks: newsLinks })
       });
 
       const json = await res.json();
@@ -120,13 +162,15 @@ export default function NewsletterPage() {
       const res = await fetch('/api/newsletter/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+        body: JSON.stringify({ customLinks: newsLinks })
       });
 
       const json = await res.json();
       if (res.ok) {
         setMessage({ type: 'success', text: json.message });
         fetchData();
+        // Vider les liens apres envoi
+        setNewsLinks([]);
       } else {
         setMessage({ type: 'error', text: json.error || 'Erreur lors de envoi' });
       }
@@ -291,20 +335,43 @@ export default function NewsletterPage() {
 
           {/* Colonne droite - Contenu */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Actualites RSS */}
+            {/* Liens d'actualites personnalises */}
             <div className="card">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Newspaper className="w-5 h-5 text-primary-600" />
-                Actualites de Syrie (automatique)
-              </h2>
-              <div className="space-y-2">
-                {data?.news?.slice(0, 5).map((item: any, i: number) => (
-                  <div key={i} className="p-3 bg-neutral-50 rounded-lg">
-                    <p className="font-medium text-sm">{item.title}</p>
-                    <p className="text-xs text-neutral-500">{item.source}</p>
-                  </div>
-                )) || <p className="text-neutral-500 text-sm">Aucune actualite</p>}
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  <LinkIcon className="w-5 h-5 text-primary-600" />
+                  Liens d'actualites ({newsLinks.length}/3)
+                </h2>
+                {newsLinks.length < 3 && (
+                  <button
+                    onClick={() => setShowLinkForm(true)}
+                    className="btn-primary text-sm py-2 flex items-center gap-1"
+                  >
+                    <Plus className="w-4 h-4" /> Ajouter un lien
+                  </button>
+                )}
               </div>
+
+              {newsLinks.length > 0 ? (
+                <div className="space-y-2">
+                  {newsLinks.map((link, index) => (
+                    <div key={index} className="p-3 bg-neutral-50 rounded-lg flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{link.title}</p>
+                        <p className="text-xs text-neutral-500">{link.source || 'Source non specifiee'}</p>
+                        <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary-600 hover:underline truncate block">
+                          {link.url}
+                        </a>
+                      </div>
+                      <button onClick={() => handleRemoveLink(index)} className="p-1 hover:bg-red-100 rounded ml-2">
+                        <X className="w-4 h-4 text-red-600" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-neutral-500 text-sm">Ajoutez jusqu'a 3 liens d'articles pour la newsletter.</p>
+              )}
             </div>
 
             {/* Evenements */}
@@ -384,6 +451,69 @@ export default function NewsletterPage() {
             </div>
           </div>
         </div>
+
+        {/* Modal formulaire lien */}
+        {showLinkForm && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl max-w-lg w-full p-6">
+              <h3 className="text-lg font-semibold mb-4">Ajouter un lien d'actualite</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Titre de l'article *</label>
+                  <input
+                    type="text"
+                    value={linkForm.title}
+                    onChange={(e) => setLinkForm({ ...linkForm, title: e.target.value })}
+                    className="input"
+                    placeholder="Ex: Nouvelle loi sur l'immigration"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">URL de l'article *</label>
+                  <input
+                    type="url"
+                    value={linkForm.url}
+                    onChange={(e) => setLinkForm({ ...linkForm, url: e.target.value })}
+                    className="input"
+                    placeholder="https://..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Source (optionnel)</label>
+                  <input
+                    type="text"
+                    value={linkForm.source}
+                    onChange={(e) => setLinkForm({ ...linkForm, source: e.target.value })}
+                    className="input"
+                    placeholder="Ex: Le Monde, France Info..."
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => {
+                    setShowLinkForm(false);
+                    setLinkForm({ title: '', url: '', source: '' });
+                  }}
+                  className="btn-secondary flex-1"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleAddLink}
+                  disabled={!linkForm.title || !linkForm.url}
+                  className="btn-primary flex-1"
+                >
+                  Ajouter
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Modal formulaire article */}
         {showArticleForm && (
