@@ -204,14 +204,14 @@ export async function POST(request: Request) {
     }
 
     // Verifier la configuration SMTP
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
       console.error('SMTP config missing:', {
         host: !!process.env.SMTP_HOST,
         user: !!process.env.SMTP_USER,
-        pass: !!process.env.SMTP_PASS
+        pass: !!process.env.SMTP_PASSWORD
       });
       return NextResponse.json({ 
-        error: 'Configuration SMTP manquante. Verifiez les variables SMTP_HOST, SMTP_USER, SMTP_PASS dans Vercel.' 
+        error: 'Configuration SMTP manquante. Verifiez les variables SMTP_HOST, SMTP_USER, SMTP_PASSWORD dans Vercel.' 
       }, { status: 500 });
     }
 
@@ -235,7 +235,7 @@ export async function POST(request: Request) {
       secure: true,
       auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        pass: process.env.SMTP_PASSWORD,
       },
     });
 
