@@ -7,6 +7,7 @@ import { getTranslations } from 'next-intl/server';
 import { Calendar, Building2, Users, ArrowRight, Newspaper } from 'lucide-react';
 import { OrganizationJsonLd } from '@/components/seo/JsonLd';
 import { NewsSection } from '@/components/home/NewsSection';
+import NewsletterSection from '@/components/home/NewsletterSection';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   const { locale } = params;
@@ -102,6 +103,9 @@ export default async function HomePage({ params }: Props) {
           <NewsSection />
         </div>
       </section>
+
+      {/* Newsletter */}
+      <NewsletterSection locale={locale} />
 
       {/* CTA */}
       <section className="py-16 bg-primary-600">

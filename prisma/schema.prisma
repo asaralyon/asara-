@@ -326,3 +326,15 @@ model Newsletter {
   recipientCount Int   @default(0)
   createdAt   DateTime @default(now())
 }
+
+model Subscriber {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  firstName   String
+  lastName    String
+  locale      String   @default("fr")
+  isActive    Boolean  @default(true)
+  confirmedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

@@ -42,8 +42,9 @@ async function getPublishedArticles() {
   });
 }
 
-async function getAllMembers() {
-  return prisma.user.findMany({
+async function getAllRecipients() {
+  // Membres de l'association
+  const members = await prisma.user.findMany({
     where: {
       OR: [
         { role: 'MEMBER' },
@@ -53,6 +54,31 @@ async function getAllMembers() {
     },
     select: { email: true, firstName: true, lastName: true }
   });
+
+  // Inscrits a la newsletter
+  const subscribers = await prisma.subscriber.findMany({
+    where: { isActive: true },
+    select: { email: true, firstName: true, lastName: true }
+  });
+
+  // Fusionner et dedupliquer par email
+  const allEmails = new Map();
+  
+  members.forEach(m => {
+    allEmails.set(m.email, { email: m.email, firstName: m.firstName, lastName: m.lastName });
+  });
+  
+  subscribers.forEach(s => {
+    if (!allEmails.has(s.email)) {
+      allEmails.set(s.email, { email: s.email, firstName: s.firstName, lastName: s.lastName });
+    }
+  });
+
+  return {
+    recipients: Array.from(allEmails.values()),
+    membersCount: members.length,
+    subscribersCount: subscribers.length
+  };
 }
 
 interface NewsLink {
@@ -211,11 +237,6 @@ export async function POST(request: Request) {
     }
 
     if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
-      console.error('SMTP config missing:', {
-        host: !!process.env.SMTP_HOST,
-        user: !!process.env.SMTP_USER,
-        pass: !!process.env.SMTP_PASSWORD
-      });
       return NextResponse.json({ 
         error: 'Configuration SMTP manquante. Verifiez les variables SMTP_HOST, SMTP_USER, SMTP_PASSWORD dans Vercel.' 
       }, { status: 500 });
@@ -261,27 +282,28 @@ export async function POST(request: Request) {
       }
     }
 
-    const members = await getAllMembers();
+    // Recuperer tous les destinataires (membres + subscribers)
+    const { recipients, membersCount, subscribersCount } = await getAllRecipients();
     
-    if (members.length === 0) {
-      return NextResponse.json({ error: 'Aucun membre trouve' }, { status: 400 });
+    if (recipients.length === 0) {
+      return NextResponse.json({ error: 'Aucun destinataire trouve' }, { status: 400 });
     }
 
     let sentCount = 0;
     const errors: string[] = [];
     
-    for (const member of members) {
+    for (const recipient of recipients) {
       try {
         await transporter.sendMail({
           from: process.env.SMTP_FROM || `"ASARA Lyon" <${process.env.SMTP_USER}>`,
-          to: member.email,
+          to: recipient.email,
           subject,
           html,
         });
         sentCount++;
       } catch (err: any) {
-        console.error(`Erreur envoi a ${member.email}:`, err.message);
-        errors.push(member.email);
+        console.error(`Erreur envoi a ${recipient.email}:`, err.message);
+        errors.push(recipient.email);
       }
     }
 
@@ -295,8 +317,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ 
       success: true, 
-      message: `Newsletter envoyee a ${sentCount}/${members.length} membres`,
+      message: `Newsletter envoyee a ${sentCount} destinataires (${membersCount} membres + ${subscribersCount} inscrits)`,
       recipientCount: sentCount,
+      details: { members: membersCount, subscribers: subscribersCount },
       errors: errors.length > 0 ? errors : undefined
     });
 

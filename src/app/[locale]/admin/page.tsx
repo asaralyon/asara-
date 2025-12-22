@@ -114,6 +114,14 @@ export default async function AdminPage({ params }: { params: { locale: string }
             <p className="text-neutral-500 text-sm">Ajouter et gérer les événements</p>
           </Link>
 
+          <Link href={'/' + locale + '/admin/subscribers'} className="card hover:shadow-strong transition-shadow">
+            <div className="flex items-center gap-2 mb-2">
+              <Users className="w-5 h-5 text-purple-500" />
+              <h3 className="font-semibold text-lg">Inscrits Newsletter</h3>
+            </div>
+            <p className="text-neutral-500 text-sm">Voir les personnes inscrites a la newsletter</p>
+          </Link>
+
           <Link href={'/' + locale + '/admin/newsletter'} className="card hover:shadow-strong transition-shadow border-2 border-green-200 bg-green-50">
             <div className="flex items-center gap-2 mb-2">
               <Newspaper className="w-5 h-5 text-green-600" />
