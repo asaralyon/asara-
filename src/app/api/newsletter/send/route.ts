@@ -62,14 +62,6 @@ interface NewsLink {
 }
 
 function generateNewsletterHTML(customLinks: NewsLink[], events: any[], articles: any[], baseUrl: string) {
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('ar-SY', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
-  };
-
   const formatDateFr = (date: Date) => {
     return new Date(date).toLocaleDateString('fr-FR', {
       day: 'numeric',
@@ -78,7 +70,6 @@ function generateNewsletterHTML(customLinks: NewsLink[], events: any[], articles
     });
   };
 
-  // Convertir les sauts de ligne en <br> pour le HTML
   const formatContent = (content: string) => {
     return content
       .replace(/\n\n/g, '</p><p style="margin: 12px 0; color: #1f2937; font-size: 15px; line-height: 2;">')
@@ -104,11 +95,11 @@ function generateNewsletterHTML(customLinks: NewsLink[], events: any[], articles
       <td style="padding: 14px 16px; border-bottom: 1px solid #d1d5db; background: #ffffff;">
         <p style="margin: 0; font-weight: 600; color: #1f2937; font-size: 15px;">${event.title}</p>
         <p style="margin: 6px 0 0; color: #4b5563; font-size: 14px;">
-          📅 ${formatDateFr(event.eventDate)} ${event.location ? `| 📍 ${event.location}` : ''}
+          ${formatDateFr(event.eventDate)} ${event.location ? `| ${event.location}` : ''}
         </p>
       </td>
     </tr>
-  `).join('') : '<tr><td style="padding: 14px 16px; color: #4b5563; background: #ffffff;">لا توجد فعاليات قادمة حالياً</td></tr>';
+  `).join('') : '<tr><td style="padding: 14px 16px; color: #4b5563; background: #ffffff;" dir="rtl">لا توجد فعاليات قادمة حالياً</td></tr>';
 
   const articlesHTML = articles.length > 0 ? articles.map(article => `
     <tr>
@@ -122,7 +113,7 @@ function generateNewsletterHTML(customLinks: NewsLink[], events: any[], articles
           </p>
         </div>
         <p style="margin: 20px 0 0; padding-top: 12px; border-top: 2px solid #86efac; color: #166534; font-size: 14px; font-weight: 600;">
-          ✍️ ${article.authorName}
+          ${article.authorName}
         </p>
       </td>
     </tr>
@@ -146,9 +137,9 @@ function generateNewsletterHTML(customLinks: NewsLink[], events: any[], articles
           <tr>
             <td style="background: linear-gradient(135deg, #166534 0%, #14532d 100%); padding: 40px; text-align: center;">
               <img src="${baseUrl}/images/logo.png" alt="ASARA" width="100" style="margin-bottom: 20px;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">النشرة الإخبارية</h1>
-              <p style="margin: 12px 0 0; color: #ffffff; font-size: 18px; font-weight: 600;">جمعية السوريين في أوفيرن رون ألب</p>
-              <p style="margin: 8px 0 0; color: #bbf7d0; font-size: 14px;">ASARA Lyon</p>
+              <h1 style="margin: 0; color: #ffffff; font-size: 26px; font-weight: 700;">جمعية السوريين في أوفيرن رون ألب</h1>
+              <p style="margin: 12px 0 0; color: #bbf7d0; font-size: 20px; font-weight: 700;">ASARA Lyon</p>
+              <p style="margin: 16px 0 0; color: #dcfce7; font-size: 16px;">النشرة الإخبارية</p>
             </td>
           </tr>
 
@@ -175,11 +166,6 @@ function generateNewsletterHTML(customLinks: NewsLink[], events: any[], articles
               <table width="100%" cellpadding="0" cellspacing="0" style="border-radius: 8px; overflow: hidden; border: 1px solid #d1d5db;">
                 ${eventsHTML}
               </table>
-              <p style="margin: 20px 0 0; text-align: center;">
-                <a href="${baseUrl}/fr/evenements" style="display: inline-block; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: #ffffff; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(34,197,94,0.4);">
-                  عرض جميع الفعاليات ←
-                </a>
-              </p>
             </td>
           </tr>
 
@@ -200,14 +186,10 @@ function generateNewsletterHTML(customLinks: NewsLink[], events: any[], articles
           <!-- Footer -->
           <tr>
             <td style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%); padding: 32px; text-align: center;">
-              <p style="margin: 0 0 4px; color: #ffffff; font-size: 18px; font-weight: 700;">ASARA Lyon</p>
-              <p style="margin: 0 0 20px; color: #d1d5db; font-size: 14px;">
-                جمعية السوريين في أوفيرن رون ألب
-              </p>
-              <p style="margin: 0; font-size: 13px;">
-                <a href="${baseUrl}/fr" style="color: #9ca3af; text-decoration: none; margin: 0 10px;">الموقع</a> | 
-                <a href="${baseUrl}/fr/annuaire" style="color: #9ca3af; text-decoration: none; margin: 0 10px;">الدليل</a> | 
-                <a href="${baseUrl}/fr/contact" style="color: #9ca3af; text-decoration: none; margin: 0 10px;">اتصل بنا</a>
+              <p style="margin: 0 0 8px; color: #ffffff; font-size: 20px; font-weight: 700;">جمعية السوريين في أوفيرن رون ألب</p>
+              <p style="margin: 0 0 8px; color: #d1d5db; font-size: 16px; font-weight: 600;">ASARA Lyon</p>
+              <p style="margin: 16px 0 0;">
+                <a href="${baseUrl}" style="color: #22c55e; text-decoration: none; font-size: 15px; font-weight: 500;">www.asara-lyon.fr</a>
               </p>
             </td>
           </tr>
@@ -228,7 +210,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Non autorise' }, { status: 401 });
     }
 
-    // Verifier la configuration SMTP
     if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
       console.error('SMTP config missing:', {
         host: !!process.env.SMTP_HOST,
@@ -244,16 +225,13 @@ export async function POST(request: Request) {
     const { testEmail, customLinks = [] } = body;
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://asara-lyon.fr';
 
-    // Recuperer les donnees
     const [events, articles] = await Promise.all([
       getUpcomingEvents(),
       getPublishedArticles()
     ]);
 
-    // Generer le HTML
     const html = generateNewsletterHTML(customLinks, events, articles, baseUrl);
 
-    // Configurer le transporteur
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '465'),
@@ -283,14 +261,12 @@ export async function POST(request: Request) {
       }
     }
 
-    // Recuperer tous les membres
     const members = await getAllMembers();
     
     if (members.length === 0) {
       return NextResponse.json({ error: 'Aucun membre trouve' }, { status: 400 });
     }
 
-    // Envoi a tous les membres
     let sentCount = 0;
     const errors: string[] = [];
     
@@ -309,7 +285,6 @@ export async function POST(request: Request) {
       }
     }
 
-    // Enregistrer l'envoi
     await prisma.newsletter.create({
       data: {
         subject,
