@@ -139,7 +139,7 @@ function generateNewsletterHTML(customLinks: NewsLink[], events: any[], articles
               <img src="${baseUrl}/images/logo.png" alt="ASARA" width="100" style="margin-bottom: 20px;">
               <h1 style="margin: 0; color: #166534; font-size: 26px; font-weight: 700;">جمعية السوريين في أوفيرن رون ألب</h1>
               <p style="margin: 12px 0 0; color: #166534; font-size: 22px; font-weight: 700;">ASARA Lyon</p>
-              <p style="margin: 16px 0 0; color: #166534; font-size: 18px; font-weight: 600;">النشرة الإخبارية</p>
+              <p style="margin: 16px 0 0; color: #166534; font-size: 18px; font-weight: 600;">النشرة الأسبوعية</p>
             </td>
           </tr>
 
@@ -242,7 +242,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const subject = `النشرة الإخبارية - ASARA Lyon - ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+    const subject = `النشرة الأسبوعية - ASARA Lyon - ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
 
     if (testEmail) {
       try {
