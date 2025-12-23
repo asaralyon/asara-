@@ -8,6 +8,7 @@
     "directory": "الدليل",
     "events": "الفعاليات",
     "contact": "اتصل بنا",
+    "newsletter": "النشرة",
     "login": "تسجيل الدخول",
     "myAccount": "حسابي",
     "logout": "تسجيل الخروج",
@@ -181,6 +182,7 @@
     "description": "جمعية السوريين في أوفيرن رون ألب",
     "quickLinks": "روابط سريعة",
     "contact": "اتصل بنا",
+    "newsletter": "النشرة",
     "followUs": "تابعونا",
     "rights": "جميع الحقوق محفوظة"
   },

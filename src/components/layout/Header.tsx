@@ -52,6 +52,7 @@ export function Header() {
     { name: t('directory'), href: `/${locale}/annuaire` },
     { name: t('events'), href: `/${locale}/evenements` },
     { name: t('contact'), href: `/${locale}/contact` },
+    { name: t('newsletter'), href: `/${locale}/newsletter` },
   ];
 
   const isRTL = locale === 'ar';

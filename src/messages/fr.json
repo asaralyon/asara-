@@ -8,6 +8,7 @@
     "directory": "Annuaire",
     "events": "Événements",
     "contact": "Contact",
+    "newsletter": "Newsletter",
     "login": "Connexion",
     "myAccount": "Mon compte",
     "logout": "Déconnexion",
@@ -181,6 +182,7 @@
     "description": "Association des Syriens d'Auvergne Rhône-Alpes",
     "quickLinks": "Liens rapides",
     "contact": "Contact",
+    "newsletter": "Newsletter",
     "followUs": "Suivez-nous",
     "rights": "Tous droits réservés"
   },
