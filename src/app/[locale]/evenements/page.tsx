@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
@@ -31,14 +33,12 @@ export default async function EventsPage({ params }: Props) {
   const { locale } = params;
   const t = await getTranslations('events');
   const isRTL = locale === 'ar';
-
   const events = await getEvents();
 
   return (
     <main dir={isRTL ? 'rtl' : 'ltr'}>
       <section className="section bg-neutral-50 min-h-screen">
         <div className="container-app">
-          {/* Header avec bouton retour */}
           <Link
             href={`/${locale}`}
             className={`inline-flex items-center gap-2 text-neutral-600 hover:text-primary-500 mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}
@@ -58,7 +58,6 @@ export default async function EventsPage({ params }: Props) {
             <div className="space-y-8">
               {events.map((event: any) => (
                 <div key={event.id} className="card">
-                  {/* Header de l'événement */}
                   <div className="mb-4">
                     <h2 className="text-xl font-bold mb-2">{event.title}</h2>
                     <div className={`flex flex-wrap gap-4 text-sm text-neutral-500 ${isRTL ? 'flex-row-reverse' : ''}`}>
@@ -67,11 +66,7 @@ export default async function EventsPage({ params }: Props) {
                           <Calendar className="w-4 h-4" />
                           {new Date(event.eventDate).toLocaleDateString(
                             isRTL ? 'ar-SY' : 'fr-FR',
-                            {
-                              day: 'numeric',
-                              month: 'long',
-                              year: 'numeric',
-                            }
+                            { day: 'numeric', month: 'long', year: 'numeric' }
                           )}
                         </span>
                       )}
@@ -84,7 +79,6 @@ export default async function EventsPage({ params }: Props) {
                     </div>
                   </div>
 
-                  {/* Contenu selon le type */}
                   {event.type === 'DOCUMENT' && event.documentUrl ? (
                     event.documentUrl.endsWith('.pdf') ? (
                       
@@ -102,7 +96,7 @@ export default async function EventsPage({ params }: Props) {
                       <img
                         src={event.documentUrl}
                         alt={event.title}
-                        className="w-full rounded-xl object-contain"
+                        className="w-full rounded-xl"
                       />
                     )
                   ) : (
@@ -111,27 +105,26 @@ export default async function EventsPage({ params }: Props) {
                         <img
                           src={event.imageUrl1}
                           alt={event.title}
-                          className="w-full rounded-xl object-contain max-h-[500px]"
+                          className="w-full rounded-xl"
                         />
                       )}
                       {event.imageUrl2 && (
                         <img
                           src={event.imageUrl2}
                           alt={event.title}
-                          className="w-full rounded-xl object-contain max-h-[500px]"
+                          className="w-full rounded-xl"
                         />
                       )}
                       {event.imageUrl3 && (
                         <img
                           src={event.imageUrl3}
                           alt={event.title}
-                          className="w-full rounded-xl object-contain max-h-[500px]"
+                          className="w-full rounded-xl"
                         />
                       )}
                     </div>
                   )}
 
-                  {/* Description */}
                   {event.description && (
                     <p className="text-neutral-600 mt-4 whitespace-pre-line">
                       {event.description}
