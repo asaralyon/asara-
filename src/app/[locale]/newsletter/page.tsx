@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
-import { Calendar, Mail, ArrowLeft, ExternalLink } from 'lucide-react';
+import { Calendar, Mail, ArrowLeft, ExternalLink, Newspaper } from 'lucide-react';
 import NewsletterSubscribeButton from '@/components/NewsletterSubscribeButton';
 
 type Props = {
@@ -70,14 +70,27 @@ async function getPublishedArticles() {
   });
 }
 
+async function getNewsletterLinks() {
+  try {
+    return await (prisma as any).newsletterLink.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'desc' },
+      take: 10
+    });
+  } catch {
+    return [];
+  }
+}
+
 export default async function NewsletterPage({ params }: Props) {
   const { locale } = params;
   const isRTL = locale === 'ar';
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://asara-lyon.fr';
   
-  const [events, articles] = await Promise.all([
+  const [events, articles, newsLinks] = await Promise.all([
     getUpcomingEvents(),
-    getPublishedArticles()
+    getPublishedArticles(),
+    getNewsletterLinks()
   ]);
 
   const today = new Date();
@@ -118,6 +131,44 @@ export default async function NewsletterPage({ params }: Props) {
       <div className="container-app py-8">
         <div className="max-w-3xl mx-auto space-y-8">
           
+          {/* Articles de presse */}
+          {newsLinks.length > 0 && (
+            <section className="card">
+              <h2 className={'text-xl font-bold mb-6 flex items-center gap-3 ' + (isRTL ? 'flex-row-reverse' : '')}>
+                <Newspaper className="w-6 h-6 text-primary-600" />
+                {isRTL ? 'مقالات صحفية' : 'Articles de presse'}
+              </h2>
+              
+              <div className="space-y-3">
+                {newsLinks.map((link: any) => (
+                  <a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block p-4 bg-neutral-50 rounded-xl hover:bg-primary-50 transition-colors border border-transparent hover:border-primary-200"
+                  >
+                    <div className={'flex items-start gap-3 ' + (isRTL ? 'flex-row-reverse' : '')}>
+                      <span className="text-xl">🔗</span>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-primary-700 hover:text-primary-800">
+                          {link.title}
+                        </h3>
+                        {link.source && (
+                          <p className="text-sm text-neutral-500 mt-1">
+                            {isRTL ? 'المصدر: ' : 'Source: '}{link.source}
+                          </p>
+                        )}
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-neutral-400" />
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Événements */}
           <section className="card">
             <h2 className={'text-xl font-bold mb-6 flex items-center gap-3 ' + (isRTL ? 'flex-row-reverse' : '')}>
               <Calendar className="w-6 h-6 text-primary-600" />
@@ -164,6 +215,7 @@ export default async function NewsletterPage({ params }: Props) {
             </div>
           </section>
 
+          {/* Articles de la communauté */}
           {articles.length > 0 && (
             <section className="card">
               <h2 className={'text-xl font-bold mb-6 flex items-center gap-3 ' + (isRTL ? 'flex-row-reverse' : '')}>
@@ -189,6 +241,7 @@ export default async function NewsletterPage({ params }: Props) {
             </section>
           )}
 
+          {/* Inscription */}
           <section className="card bg-gradient-to-br from-primary-50 to-green-50 border-2 border-primary-200">
             <div className="text-center py-4">
               <h2 className="text-xl font-bold text-primary-700 mb-3">
@@ -203,6 +256,7 @@ export default async function NewsletterPage({ params }: Props) {
             </div>
           </section>
 
+          {/* Partager */}
           <section className="card text-center">
             <h2 className="font-semibold mb-4">
               {isRTL ? 'شارك هذه النشرة' : 'Partager cette newsletter'}
