@@ -85,7 +85,7 @@ function generateNewsletterHTML(
       <a href="${item.url}" target="_blank" style="color: #166534; text-decoration: underline; font-weight: 700; font-size: 15px; display: block;">
         🔗 ${item.title}
       </a>
-      ${item.source ? `<p style="margin: 4px 0 0; color: #6b7280; font-size: 12px;">المصدر: ${item.source}</p>` : ''}
+      ${item.source ? `<a href="${eventsUrl}" target="_blank" style="margin: 4px 0 0; color: #166534; font-size: 12px; text-decoration: underline; display: block;">المصدر: ${item.source}</p>` : ''}
     </div>
   `).join('') : '';
 
@@ -94,9 +94,9 @@ function generateNewsletterHTML(
       <a href="${eventsUrl}" target="_blank" style="color: #166534; text-decoration: underline; font-weight: 600; font-size: 15px; display: block; cursor: pointer;">
         �� ${event.title}
       </a>
-      <p style="margin: 4px 0 0; color: #6b7280; font-size: 12px;">
-        انقر للمزيد من التفاصيل
-      </p>
+      <a href="${eventsUrl}" target="_blank" style="margin: 4px 0 0; color: #166534; font-size: 12px; text-decoration: underline; display: block;">
+        ${eventsUrl}
+      </a>
     </div>
   `).join('') : '<div style="padding: 14px 16px; color: #6b7280; background: #ffffff; text-align: center;">لا توجد فعاليات قادمة حالياً</div>';
 
@@ -110,7 +110,7 @@ function generateNewsletterHTML(
       </div>
       <p style="margin: 16px 0 0; padding-top: 12px; border-top: 1px solid #86efac; color: #166534; font-size: 13px; font-weight: 600;">
         ✍️ ${article.authorName}
-      </p>
+      </a>
     </div>
   `).join('') : '';
 
@@ -150,14 +150,14 @@ function generateNewsletterHTML(
     <div style="background: linear-gradient(135deg, #166534 0%, #14532d 100%); padding: 30px; text-align: center;">
       <div style="margin-bottom: 20px;">
         <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700;">جمعية السوريين في أوفيرن رون ألب</h1>
-        <p style="margin: 8px 0 0; color: #bbf7d0; font-size: 18px; font-weight: 600;">ASARA Lyon</p>
+        <p style="margin: 8px 0 0; color: #bbf7d0; font-size: 18px; font-weight: 600;">ASARA Lyon</a>
       </div>
       
       <div style="background: rgba(255,255,255,0.15); border-radius: 12px; padding: 16px; margin-top: 16px;">
-        <p style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 700;">📰 النشرة الأسبوعية</p>
+        <p style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 700;">📰 النشرة الأسبوعية</a>
         <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3);">
-          <p style="margin: 0; color: #dcfce7; font-size: 16px; font-weight: 600;">${hijriDate}</p>
-          <p style="margin: 6px 0 0; color: #bbf7d0; font-size: 14px;">${gregorianDate}</p>
+          <p style="margin: 0; color: #dcfce7; font-size: 16px; font-weight: 600;">${hijriDate}</a>
+          <p style="margin: 6px 0 0; color: #bbf7d0; font-size: 14px;">${gregorianDate}</a>
         </div>
       </div>
     </div>
@@ -186,7 +186,7 @@ function generateNewsletterHTML(
         <a href="${eventsUrl}" target="_blank" style="color: #166534; font-size: 14px; font-weight: 600; text-decoration: underline;">
           عرض جميع الفعاليات ← ${eventsUrl}
         </a>
-      </p>
+      </a>
     </div>
 
     ${articles.length > 0 ? `
@@ -203,7 +203,7 @@ function generateNewsletterHTML(
     <div style="padding: 24px; background: #f0fdf4; text-align: center; border-top: 3px solid #22c55e;">
       <p style="margin: 0 0 8px; color: #166534; font-size: 16px; font-weight: 700;">
         📧 للاشتراك في نشرتنا الأسبوعية
-      </p>
+      </a>
       <a href="${subscribeUrl}" target="_blank" style="color: #166534; font-size: 14px; text-decoration: underline; font-weight: 600;">
         ${subscribeUrl}
       </a>
@@ -211,8 +211,8 @@ function generateNewsletterHTML(
 
     <!-- Footer -->
     <div style="background: #1f2937; padding: 24px; text-align: center;">
-      <p style="margin: 0 0 4px; color: #ffffff; font-size: 16px; font-weight: 700;">جمعية السوريين في أوفيرن رون ألب</p>
-      <p style="margin: 0 0 12px; color: #9ca3af; font-size: 13px;">ASARA Lyon</p>
+      <p style="margin: 0 0 4px; color: #ffffff; font-size: 16px; font-weight: 700;">جمعية السوريين في أوفيرن رون ألب</a>
+      <p style="margin: 0 0 12px; color: #9ca3af; font-size: 13px;">ASARA Lyon</a>
       <a href="${baseUrl}" target="_blank" style="color: #22c55e; font-size: 14px; text-decoration: underline;">www.asara-lyon.fr</a>
     </div>
 
